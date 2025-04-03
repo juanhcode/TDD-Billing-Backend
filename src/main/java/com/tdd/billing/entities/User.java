@@ -34,7 +34,7 @@ public class User {
     private UserRole role;
 
     @Column(nullable = false)
-    private boolean status = true; // Debe coincidir con `DEFAULT TRUE` en la BD
+    private boolean status = true;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
