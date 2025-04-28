@@ -23,14 +23,6 @@ public class UserService {
         return userRepository.save(usuario);
     }
 
-    public User login(String email, String password) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent() && passwordEncoder.matches(password, userOptional.get().getPassword())) {
-            return userOptional.get();
-        }
-        throw new RuntimeException("Usuario no encontrado o contraseña incorrecta");
-    }
-
     public List<User> listarUsuariosActivos() {
         return userRepository.findByStatusTrue();
     }
@@ -52,5 +44,11 @@ public class UserService {
 
     public void eliminarUsuario(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public User authenticate(String email, String password) {
+        return userRepository.findByEmail(email)
+                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
     }
 }
