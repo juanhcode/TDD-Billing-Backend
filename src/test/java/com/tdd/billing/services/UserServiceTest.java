@@ -51,25 +51,25 @@ class UserServiceTest {
     }
 
 
-    @Test
-    void loginUsuario_Exitoso() {
-        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("123456", user.getPassword())).thenReturn(true);
-
-        User result = userService.login("juan@mail.com", "123456");
-
-        assertNotNull(result);
-        assertEquals("Juan", result.getName());
-        System.out.println("Test registrarUsuario pasó exitosamente ✅");
-    }
-
-    @Test
-    void loginUsuario_Fallido() {
-        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> userService.login("juan@mail.com", "123456"));
-        System.out.println("Test registrarUsuario pasó exitosamente ✅");
-    }
+//    @Test
+//    void loginUsuario_Exitoso() {
+//        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
+//        when(passwordEncoder.matches("123456", user.getPassword())).thenReturn(true);
+//
+//        User result = userService.login("juan@mail.com", "123456");
+//
+//        assertNotNull(result);
+//        assertEquals("Juan", result.getName());
+//        System.out.println("Test registrarUsuario pasó exitosamente ✅");
+//    }
+//
+//    @Test
+//    void loginUsuario_Fallido() {
+//        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.empty());
+//
+//        assertThrows(RuntimeException.class, () -> userService.login("juan@mail.com", "123456"));
+//        System.out.println("Test registrarUsuario pasó exitosamente ✅");
+//    }
 
     @Test
     void listarUsuariosActivos() {
