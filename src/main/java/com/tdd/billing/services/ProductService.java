@@ -1,121 +1,83 @@
 package com.tdd.billing.services;
 
-import com.tdd.billing.entities.*;
-import com.tdd.billing.repositories.*;
-import jakarta.persistence.EntityNotFoundException;
+import com.tdd.billing.entities.Product;
+import com.tdd.billing.entities.Store;
+import com.tdd.billing.entities.Category;
+import com.tdd.billing.entities.Supplier;
+import com.tdd.billing.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
-    private final StoreRepository storeRepository;
-    private final CategoryRepository categoryRepository;
-    private final SupplierRepository supplierRepository;
 
-    public ProductService(ProductRepository productRepository,
-                          StoreRepository storeRepository,
-                          CategoryRepository categoryRepository,
-                          SupplierRepository supplierRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.storeRepository = storeRepository;
-        this.categoryRepository = categoryRepository;
-        this.supplierRepository = supplierRepository;
     }
 
-    @Transactional
-    public Product crearProducto(Product producto) {
-        // Validar que las relaciones existan
-        Store store = storeRepository.findById(producto.getStore().getId())
-                .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
-        Category category = categoryRepository.findById(producto.getCategory().getId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-        Supplier supplier = supplierRepository.findById(producto.getSupplier().getId())
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-
-        // Asignar las entidades completas al producto
-        producto.setStore(store);
-        producto.setCategory(category);
-        producto.setSupplier(supplier);
-
-        return productRepository.save(producto);
+    // Registrar un nuevo producto
+    public Product registerProduct(Product product) {
+        return productRepository.save(product);
     }
 
-    public List<Product> listarProductosActivos() {
-        return productRepository.findByStatusTrue();
-    }
-
-    public Optional<Product> buscarPorId(Long id) {
+    // Obtener un producto por ID
+    public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    @Transactional
-    public Product actualizarProducto(Long id, Product cambios) {
-        Product producto = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        // Actualizar campos básicos
-        producto.setName(cambios.getName());
-        producto.setDescription(cambios.getDescription());
-        producto.setPrice(cambios.getPrice());
-        producto.setStock(cambios.getStock());
-        producto.setStatus(cambios.isStatus());
-
-        // Actualizar relaciones si se proporcionan
-        if (cambios.getStore() != null) {
-            Store store = storeRepository.findById(cambios.getStore().getId())
-                    .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
-            producto.setStore(store);
-        }
-
-        if (cambios.getCategory() != null) {
-            Category category = categoryRepository.findById(cambios.getCategory().getId())
-                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-            producto.setCategory(category);
-        }
-
-        if (cambios.getSupplier() != null) {
-            Supplier supplier = supplierRepository.findById(cambios.getSupplier().getId())
-                    .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-            producto.setSupplier(supplier);
-        }
-
-        return productRepository.save(producto);
+    // Obtener un producto por nombre
+    public Optional<Product> getProductByName(String name) {
+        return productRepository.findByName(name);
     }
 
-    @Transactional
-    public Product cambiarEstado(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
+    // Listar todos los productos activos
+    public List<Product> listActiveProducts() {
+        return productRepository.findByStatusTrue();
+    }
 
-        // Invierte el estado actual
-        product.setStatus(!product.isStatus());
+    // Listar productos por tienda
+    public List<Product> listProductsByStore(Store store) {
+        return productRepository.findByStore(store);
+    }
+
+    // Listar productos activos por tienda
+    public List<Product> listActiveProductsByStore(Store store) {
+        return productRepository.findByStoreAndStatusTrue(store);
+    }
+
+    // Listar productos por categoría
+    public List<Product> listProductsByCategory(Category category) {
+        return productRepository.findByCategory(category);
+    }
+
+    // Listar productos por proveedor
+    public List<Product> listProductsBySupplier(Supplier supplier) {
+        return productRepository.findBySupplier(supplier);
+    }
+
+    // Actualizar un producto existente
+    public Product updateProduct(Long id, Product productDetails) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setName(productDetails.getName());
+        product.setDescription(productDetails.getDescription());
+        product.setPrice(productDetails.getPrice());
+        product.setStock(productDetails.getStock());
+        product.setStatus(productDetails.getStatus());
+        product.setStore(productDetails.getStore());
+        product.setCategory(productDetails.getCategory());
+        product.setSupplier(productDetails.getSupplier());
 
         return productRepository.save(product);
     }
 
-    @Transactional
-    public void eliminarProducto(Long id) {
+    // Eliminar producto
+    public void deleteProduct(Long id) {
         productRepository.deleteById(id);
-    }
-
-    // Métodos adicionales útiles
-    public List<Product> buscarPorNombre(String nombre) {
-        return productRepository.findByNameContainingIgnoreCase(nombre);
-    }
-
-    public List<Product> buscarPorCategoria(Long categoriaId) {
-        Category categoria = categoryRepository.findById(categoriaId)
-                .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
-        return productRepository.findByCategory(categoria);
-    }
-
-    public List<Product> buscarPorTienda(Long tiendaId) {
-        Store tienda = storeRepository.findById(tiendaId)
-                .orElseThrow(() -> new EntityNotFoundException("Tienda no encontrada"));
-        return productRepository.findByStore(tienda);
     }
 }
