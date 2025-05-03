@@ -42,13 +42,14 @@ class SaleServiceTest {
     private Sale sale;
     private User user;
     private Store store;
+    private Seller seller;
     private Product product;
     private SaleItem saleItem;
 
     @BeforeEach
     void setUp() {
         user = new User(1L, "cliente@example.com", "Cliente Ejemplo", "password", UserRole.CUSTOMER, true, LocalDateTime.now());
-        store = new Store(1L, "Tienda Principal", "Dirección", true, LocalDateTime.now());
+        store = new Store(1L, seller, "Tienda Principal", "http://tienda.com", "Descripción", true, LocalDateTime.now(), "Dirección");
         product = new Product(1L, store, null, null, "Laptop HP", "Modelo Elite", BigDecimal.valueOf(1500), 10, true, LocalDateTime.now());
 
         sale = new Sale();

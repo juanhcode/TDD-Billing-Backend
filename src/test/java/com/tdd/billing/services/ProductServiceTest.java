@@ -27,13 +27,14 @@ class ProductServiceTest {
     private ProductService productService;
 
     private Store store;
+    private Seller seller;
     private Category category;
     private Supplier supplier;
     private Product product;
 
     @BeforeEach
     void setUp() {
-        store = new Store(1L, "Tienda Principal", "Dirección", true, LocalDateTime.now());
+        store = new Store(1L, seller, "Tienda Principal", "http://tienda.com", "Descripción", true, LocalDateTime.now(), "Dirección");
         category = new Category(1L, store, "Electrónicos", "Descripción", true, LocalDateTime.now());
         supplier = new Supplier(1L,"Proveedor Tech", "contacto@tech.com", "555-1234","Hoyos@Sapa","Direccion del proveedor", LocalDateTime.now());
 
