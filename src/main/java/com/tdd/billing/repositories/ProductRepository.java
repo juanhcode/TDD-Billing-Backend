@@ -1,36 +1,35 @@
 package com.tdd.billing.repositories;
 
 
-import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
+import com.tdd.billing.entities.Category;
+import com.tdd.billing.entities.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // Equivalente a findByEmail para productos (búsqueda por nombre exacto)
+    // Buscar producto por nombre (opcional: sensible o no a mayúsculas)
     Optional<Product> findByName(String name);
 
-    //Usando el nombre del campo (recomendado)
-    List<Product> findByCategory(Category category);
-
-    List<Product> findByStore(Store store);
-
-    // Búsqueda de productos activos (como en UserRepository)
+    // Listar todos los productos activos
     List<Product> findByStatusTrue();
 
-    boolean existsByCategoryId(Long categoryId);
+    // Buscar todos los productos de una tienda específica
+    List<Product> findByStore(Store store);
 
-    // Búsqueda por categoríaID
-    List<Product> findByCategoryId(Long categoryId);
+    // Buscar productos por categoría
+    List<Product> findByCategory(Category category);
 
-    // Búsqueda por tienda (store)
-    List<Product> findByStoreId(Long storeId);
+    // Buscar productos por proveedor
+    List<Product> findBySupplier(Supplier supplier);
 
-    // Búsqueda por nombre que contenga un texto (case insensitive)
-    List<Product> findByNameContainingIgnoreCase(String nameFragment);
+    // Buscar productos activos en una tienda específica
+    List<Product> findByStoreAndStatusTrue(Store store);
 }
+
 
 
