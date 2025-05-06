@@ -33,7 +33,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1L, "Juan", "juan@mail.com", "123456", UserRole.CUSTOMER, true, null);
+        user = new User(1L, "Juan", "juan@mail.com", "123456", UserRole.CUSTOMER,"", true,"12121", null);
     }
 
     @Test
@@ -41,8 +41,8 @@ class UserServiceTest {
         when(passwordEncoder.encode("123456")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User newUser = new User(null, "Juan", "juan@mail.com", "123456", UserRole.CUSTOMER, true, null);
-        User result = userService.registrarUsuario(newUser);
+        User newUser = new User(null, "Juan", "juan@mail.com", "123456", UserRole.CUSTOMER,"", true,"12121", null);
+        User result = userService.registerUser(newUser);
 
         assertNotNull(result);
         assertEquals("Juan", result.getName());
@@ -87,8 +87,8 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User updatedUser = new User(1L, "Juan Updated", "juan_updated@mail.com", "newpass", UserRole.SELLER, true, null);
-        User result = userService.actualizarUsuario(1L, updatedUser);
+        User updatedUser = new User(1L, "Juan Updated", "juan_updated@mail.com", "newpass", UserRole.SELLER,"", true,"12121", null);
+        User result = userService.updateUser(1L, updatedUser);
 
         assertNotNull(result);
         assertEquals("Juan Updated", result.getName());
@@ -99,7 +99,7 @@ class UserServiceTest {
     void eliminarUsuario() {
         doNothing().when(userRepository).deleteById(1L);
 
-        userService.eliminarUsuario(1L);
+        userService.deleteUser(1L);
 
         verify(userRepository, times(1)).deleteById(1L);
         System.out.println("Test registrarUsuario pasó exitosamente ✅");

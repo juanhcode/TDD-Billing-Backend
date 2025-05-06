@@ -12,4 +12,7 @@ public class UserDTO {
     private String email;
     private String password;
     private String role;
+    private String photoUrl;
+    private boolean status;
+    private String photoNumber;
 }

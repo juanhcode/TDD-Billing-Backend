@@ -1,7 +1,7 @@
 package com.tdd.billing.services;
 
 import com.tdd.billing.entities.*;
-import com.tdd.billing.repositories.*;
+import com.tdd.billing.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,178 +23,125 @@ class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
 
-    @Mock
-    private StoreRepository storeRepository;
-
-    @Mock
-    private CategoryRepository categoryRepository;
-
-    @Mock
-    private SupplierRepository supplierRepository;
-
     @InjectMocks
     private ProductService productService;
 
-    private Product product;
     private Store store;
     private Category category;
-    private Supplier supplier;
+    private Product product;
 
-    @BeforeEach
-    void setUp() {
-        store = new Store(1L, "Tienda Principal", "Dirección", true, LocalDateTime.now());
-        category = new Category(1L, store, "Electrónicos", "Descripción", true, LocalDateTime.now());
-        supplier = new Supplier(1L,"Proveedor Tech", "contacto@tech.com", "555-1234","Hoyos@Sapa","Direccion del proveedor", LocalDateTime.now());
+//    @BeforeEach
+//    void setUp() {
+//        store = new Store(1L,"Tienda Principal", "http://tienda.com", "Descripción", true, LocalDateTime.now(), "Dirección");
+//        category = new Category(1L, store, "Electrónicos", "Descripción", true, LocalDateTime.now());
+//        product = new Product();
+//        product.setId(1L);
+//        product.setStore(store);
+//        product.setCategory(category);
+//        product.setName("Laptop HP");
+//        product.setDescription("Modelo EliteBook");
+//        product.setPrice(BigDecimal.valueOf(1500.99));
+//        product.setStock(10);
+//        product.setStatus(true);
+//        product.setCreatedAt(LocalDateTime.now());
+//    }
 
-        product = new Product();
-        product.setId(1L);
-        product.setStore(store);
-        product.setCategory(category);
-        product.setSupplier(supplier);
-        product.setName("Laptop HP");
-        product.setDescription("Modelo EliteBook");
-        product.setPrice(BigDecimal.valueOf(1500.99));
-        product.setStock(10);
-        product.setStatus(true);
-        product.setCreatedAt(LocalDateTime.now());
+    @Test
+    void testRegisterProduct() {
+        when(productRepository.save(product)).thenReturn(product);
+
+        Product saved = productService.registerProduct(product);
+
+        assertNotNull(saved);
+        assertEquals("Laptop HP", saved.getName());
+        verify(productRepository).save(product);
     }
 
     @Test
-    void crearProducto() {
-        // Configurar mocks para las relaciones
-        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
-        when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
-        when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        Product nuevoProducto = new Product();
-        nuevoProducto.setStore(store);
-        nuevoProducto.setCategory(category);
-        nuevoProducto.setSupplier(supplier);
-        nuevoProducto.setName("Laptop HP");
-        nuevoProducto.setPrice(BigDecimal.valueOf(1500.99));
-        nuevoProducto.setStock(10);
-
-        Product resultado = productService.crearProducto(nuevoProducto);
-
-        assertNotNull(resultado);
-        assertEquals("Laptop HP", resultado.getName());
-        assertEquals(10, resultado.getStock());
-        verify(productRepository, times(1)).save(any(Product.class));
-    }
-
-    @Test
-    void buscarProductoPorId() {
+    void testGetProductById() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        Optional<Product> resultado = productService.buscarPorId(1L);
+        Optional<Product> found = productService.getProductById(1L);
 
-        assertTrue(resultado.isPresent());
-        assertEquals("Laptop HP", resultado.get().getName());
+        assertTrue(found.isPresent());
+        assertEquals("Laptop HP", found.get().getName());
     }
 
     @Test
-    void buscarPorNombre() {
-        when(productRepository.findByNameContainingIgnoreCase("HP")).thenReturn(List.of(product));
-        List<Product> resultado = productService.buscarPorNombre("HP");
+    void testGetProductByName() {
+        when(productRepository.findByName("Laptop HP")).thenReturn(Optional.of(product));
 
-        assertEquals(1, resultado.size());
-        assertEquals("Laptop HP", resultado.get(0).getName());
-        verify(productRepository, times(1)).findByNameContainingIgnoreCase("HP");
+        Optional<Product> found = productService.getProductByName("Laptop HP");
+
+        assertTrue(found.isPresent());
+        assertEquals("Laptop HP", found.get().getName());
     }
 
     @Test
-    void buscarPorCategoria() {
-        // Configura el mock para categoryRepository
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
-        when(productRepository.findByCategory(category)).thenReturn(List.of(product));
-
-        // Ejecuta el método
-        List<Product> resultado = productService.buscarPorCategoria(1L);
-
-        // Verificaciones
-        assertEquals(1, resultado.size());
-        verify(categoryRepository, times(1)).findById(1L); // Ahora sí se llamará
-        verify(productRepository, times(1)).findByCategory(category);
-    }
-
-    @Test
-    void buscarPorTienda() {
-        // Configura el mock para storeRepository
-        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
-        when(productRepository.findByStore(store)).thenReturn(List.of(product));
-
-        // Ejecuta el método
-        List<Product> resultado = productService.buscarPorTienda(1L);
-
-        // Verificaciones
-        assertEquals(1, resultado.size());
-        verify(storeRepository, times(1)).findById(1L); // Ahora sí se llamará
-        verify(productRepository, times(1)).findByStore(store);
-    }
-
-    @Test
-    void listarProductosActivos() {
+    void testListActiveProducts() {
         when(productRepository.findByStatusTrue()).thenReturn(List.of(product));
 
-        List<Product> resultado = productService.listarProductosActivos();
+        List<Product> products = productService.listActiveProducts();
 
-        assertEquals(1, resultado.size());
-        assertEquals("Laptop HP", resultado.get(0).getName());
+        assertFalse(products.isEmpty());
+        assertEquals(1, products.size());
     }
 
     @Test
-    void cambiarEstado_ActivarProducto() {
-        // Configurar producto INACTIVO inicialmente
-        product.setStatus(false);
+    void testListProductsByStore() {
+        when(productRepository.findByStore(store)).thenReturn(List.of(product));
+
+        List<Product> products = productService.listProductsByStore(store);
+
+        assertEquals(1, products.size());
+        assertEquals(store, products.get(0).getStore());
+    }
+
+    @Test
+    void testListActiveProductsByStore() {
+        when(productRepository.findByStoreAndStatusTrue(store)).thenReturn(List.of(product));
+
+        List<Product> products = productService.listActiveProductsByStore(store);
+
+        assertEquals(1, products.size());
+        assertTrue(products.get(0).getStatus());
+    }
+
+    @Test
+    void testListProductsByCategory() {
+        when(productRepository.findByCategory(category)).thenReturn(List.of(product));
+
+        List<Product> products = productService.listProductsByCategory(category);
+
+        assertEquals(1, products.size());
+        assertEquals(category, products.get(0).getCategory());
+    }
+    @Test
+    void testUpdateProduct() {
+        Product updatedDetails = new Product();
+        updatedDetails.setName("Updated Name");
+        updatedDetails.setDescription("Updated Description");
+        updatedDetails.setPrice(BigDecimal.valueOf(1200.00));
+        updatedDetails.setStock(5);
+        updatedDetails.setStatus(false);
+        updatedDetails.setStore(store);
+        updatedDetails.setCategory(category);
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(productRepository.save(any(Product.class))).thenReturn(updatedDetails);
 
-        Product resultado = productService.cambiarEstado(1L);
+        Product updatedProduct = productService.updateProduct(1L, updatedDetails);
 
-        // Verificaciones
-        assertTrue(resultado.isStatus()); // Debe quedar ACTIVO (true)
-        verify(productRepository, times(1)).findById(1L);
-        verify(productRepository, times(1)).save(product);
+        assertNotNull(updatedProduct);
+        assertEquals("Updated Name", updatedProduct.getName());
+        assertFalse(updatedProduct.getStatus());
     }
 
     @Test
-    void cambiarEstado_DesactivarProducto() {
-        // Configurar producto ACTIVO inicialmente (status = true por defecto)
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Product resultado = productService.cambiarEstado(1L);
-
-        // Verificaciones
-        assertFalse(resultado.isStatus()); // Debe quedar INACTIVO (false)
-        verify(productRepository, times(1)).findById(1L);
-        verify(productRepository, times(1)).save(product);
-    }
-
-    @Test
-    void actualizarProducto() {
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        Product actualizacion = new Product();
-        actualizacion.setName("Laptop Actualizada");
-        actualizacion.setPrice(BigDecimal.valueOf(1600.00));
-        actualizacion.setStock(5);
-
-        Product resultado = productService.actualizarProducto(1L, actualizacion);
-
-        assertEquals("Laptop Actualizada", resultado.getName());
-        assertEquals(1600.00, resultado.getPrice().doubleValue());
-        assertEquals(5, resultado.getStock());
-    }
-
-    @Test
-    void eliminarProducto() {
+    void testDeleteProduct() {
         doNothing().when(productRepository).deleteById(1L);
 
-        productService.eliminarProducto(1L);
+        productService.deleteProduct(1L);
 
         verify(productRepository, times(1)).deleteById(1L);
     }

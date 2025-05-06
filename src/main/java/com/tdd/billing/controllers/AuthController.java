@@ -1,6 +1,4 @@
 package com.tdd.billing.controllers;
-
-
 import com.tdd.billing.dto.LoginReq;
 import com.tdd.billing.dto.LoginRes;
 import com.tdd.billing.entities.User;
@@ -8,7 +6,6 @@ import com.tdd.billing.helpers.JwtUtil;
 import com.tdd.billing.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

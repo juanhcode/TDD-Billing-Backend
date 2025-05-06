@@ -1,6 +1,7 @@
 package com.tdd.billing.helpers;
 
 import com.tdd.billing.entities.User;
+import com.tdd.billing.entities.UserRole;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.AuthenticationException;
@@ -94,6 +95,7 @@ public class JwtUtil {
         User user = new User();
         user.setId(((Number) claims.get("id")).longValue());
         user.setEmail((String) claims.get("email"));
+        user.setRole(UserRole.valueOf((String) claims.get("role")));
         return user;
     }
 }
