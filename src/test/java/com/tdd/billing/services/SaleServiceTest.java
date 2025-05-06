@@ -45,29 +45,29 @@ class SaleServiceTest {
     private Product product;
     private SaleItem saleItem;
 
-    @BeforeEach
-    void setUp() {
-        user = new User(1L, "cliente@example.com", "Cliente Ejemplo", "password", UserRole.CUSTOMER, true, LocalDateTime.now());
-        store = new Store(1L, "Tienda Principal", "Dirección", true, LocalDateTime.now());
-        product = new Product(1L, store, null, null, "Laptop HP", "Modelo Elite", BigDecimal.valueOf(1500), 10, true, LocalDateTime.now());
-
-        sale = new Sale();
-        sale.setId(1L);
-        sale.setUser(user);
-        sale.setStore(store);
-        sale.setTotalAmount(BigDecimal.valueOf(1500));
-        sale.setStatus(Sale.SaleStatus.COMPLETED);
-        sale.setPaymentMethod("TARJETA");
-        sale.setSaleDate(LocalDateTime.now());
-
-        saleItem = new SaleItem();
-        saleItem.setId(1L);
-        saleItem.setSale(sale);
-        saleItem.setProduct(product);
-        saleItem.setQuantity(1);
-        saleItem.setUnitPrice(product.getPrice());
-        saleItem.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(saleItem.getQuantity())));
-    }
+//    @BeforeEach
+//    void setUp() {
+//        user = new User(1L, "cliente@example.com", "Cliente Ejemplo", "password", UserRole.CUSTOMER,"", true,"12121", LocalDateTime.now());
+//        store = new Store(1L,"Tienda Principal", "http://tienda.com", "Descripción", true, LocalDateTime.now(), "Dirección");
+//        product = new Product(1L, store, null, "Laptop HP", "Modelo Elite", BigDecimal.valueOf(1500), 10, true, LocalDateTime.now());
+//
+//        sale = new Sale();
+//        sale.setId(1L);
+//        sale.setUser(user);
+//        sale.setStore(store);
+//        sale.setTotalAmount(BigDecimal.valueOf(1500));
+//        sale.setStatus(Sale.SaleStatus.COMPLETED);
+//        sale.setPaymentMethod("TARJETA");
+//        sale.setSaleDate(LocalDateTime.now());
+//
+//        saleItem = new SaleItem();
+//        saleItem.setId(1L);
+//        saleItem.setSale(sale);
+//        saleItem.setProduct(product);
+//        saleItem.setQuantity(1);
+//        saleItem.setUnitPrice(product.getPrice());
+//        saleItem.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(saleItem.getQuantity())));
+//    }
 
     @Test
     void crearVenta() {

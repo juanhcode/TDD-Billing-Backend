@@ -30,8 +30,14 @@ public class User {
     @Column(nullable = false, name = "role")
     private UserRole role;
 
+    @Column(nullable = false, name = "photo_url")
+    private String photoUrl;
+
     @Column(nullable = false)
     private boolean status = true;
+
+    @Column(nullable = false, name = "phone_number")
+    private String photoNumber;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
