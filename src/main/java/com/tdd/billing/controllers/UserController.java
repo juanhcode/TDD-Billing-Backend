@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registrarUsuario(user));
+        return ResponseEntity.ok(userService.registerUser(user));
     }
 
     @GetMapping
@@ -28,20 +28,20 @@ public class UserController {
         return ResponseEntity.ok(userService.listarUsuariosActivos());
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        Optional<User> user = userService.findByEmail(email);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        Optional<User> user = userService.findById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.actualizarUsuario(id, user));
+        return ResponseEntity.ok(userService.updateUser(id, user));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        userService.eliminarUsuario(id);
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }

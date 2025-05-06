@@ -1,5 +1,5 @@
 package com.tdd.billing.entities;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,15 +20,23 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "seller_Id", nullable = false)
-    private Seller sellerId;
-
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 255)
+    @Column(nullable = false, length = 255)
     private String url;
+
+    @Column(length = 255)
+    private String email;
+
+    @Column(length = 100)
+    private String contact;
+
+    @Column(length = 50)
+    private String nit;
+
+    @Column(columnDefinition = "text")
+    private String logo;
 
     @Column(columnDefinition = "text")
     private String description;
@@ -36,11 +44,16 @@ public class Store {
     @Column(nullable = false)
     private Boolean status = true;
 
+    @Column(nullable = false)
+    private String address;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "text")
-    private String address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Ignorar propiedades del proxy de Hibernate
+    private User userId;
 
     @PrePersist
     protected void onCreate() {
@@ -49,3 +62,4 @@ public class Store {
         }
     }
 }
+

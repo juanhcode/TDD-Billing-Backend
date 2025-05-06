@@ -18,20 +18,21 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registrarUsuario(User usuario) {
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        return userRepository.save(usuario);
+    public User registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     public List<User> listarUsuariosActivos() {
         return userRepository.findByStatusTrue();
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
-    public User actualizarUsuario(Long id, User userDetails) {
+
+    public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
@@ -42,8 +43,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void eliminarUsuario(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setStatus(false);
     }
 
     public User authenticate(String email, String password) {

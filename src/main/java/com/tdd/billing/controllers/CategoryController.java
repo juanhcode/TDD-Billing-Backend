@@ -58,7 +58,7 @@ public class CategoryController {
         List<CategoryDTO> dtos = categoryService.listActiveCategories()
                 .stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 

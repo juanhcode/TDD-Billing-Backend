@@ -4,7 +4,6 @@ package com.tdd.billing.repositories;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
-import com.tdd.billing.entities.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -24,8 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // Buscar productos por categoría
     List<Product> findByCategory(Category category);
 
-    // Buscar productos por proveedor
-    List<Product> findBySupplier(Supplier supplier);
 
     // Buscar productos activos en una tienda específica
     List<Product> findByStoreAndStatusTrue(Store store);

@@ -3,7 +3,6 @@ package com.tdd.billing.services;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
-import com.tdd.billing.entities.Supplier;
 import com.tdd.billing.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -54,10 +53,7 @@ public class ProductService {
         return productRepository.findByCategory(category);
     }
 
-    // Listar productos por proveedor
-    public List<Product> listProductsBySupplier(Supplier supplier) {
-        return productRepository.findBySupplier(supplier);
-    }
+
 
     // Actualizar un producto existente
     public Product updateProduct(Long id, Product productDetails) {
@@ -71,7 +67,6 @@ public class ProductService {
         product.setStatus(productDetails.getStatus());
         product.setStore(productDetails.getStore());
         product.setCategory(productDetails.getCategory());
-        product.setSupplier(productDetails.getSupplier());
 
         return productRepository.save(product);
     }

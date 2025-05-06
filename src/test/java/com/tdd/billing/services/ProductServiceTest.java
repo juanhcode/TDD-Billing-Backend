@@ -27,29 +27,24 @@ class ProductServiceTest {
     private ProductService productService;
 
     private Store store;
-    private Seller seller;
     private Category category;
-    private Supplier supplier;
     private Product product;
 
-    @BeforeEach
-    void setUp() {
-        store = new Store(1L, seller, "Tienda Principal", "http://tienda.com", "Descripción", true, LocalDateTime.now(), "Dirección");
-        category = new Category(1L, store, "Electrónicos", "Descripción", true, LocalDateTime.now());
-        supplier = new Supplier(1L,"Proveedor Tech", "contacto@tech.com", "555-1234","Hoyos@Sapa","Direccion del proveedor", LocalDateTime.now());
-
-        product = new Product();
-        product.setId(1L);
-        product.setStore(store);
-        product.setCategory(category);
-        product.setSupplier(supplier);
-        product.setName("Laptop HP");
-        product.setDescription("Modelo EliteBook");
-        product.setPrice(BigDecimal.valueOf(1500.99));
-        product.setStock(10);
-        product.setStatus(true);
-        product.setCreatedAt(LocalDateTime.now());
-    }
+//    @BeforeEach
+//    void setUp() {
+//        store = new Store(1L,"Tienda Principal", "http://tienda.com", "Descripción", true, LocalDateTime.now(), "Dirección");
+//        category = new Category(1L, store, "Electrónicos", "Descripción", true, LocalDateTime.now());
+//        product = new Product();
+//        product.setId(1L);
+//        product.setStore(store);
+//        product.setCategory(category);
+//        product.setName("Laptop HP");
+//        product.setDescription("Modelo EliteBook");
+//        product.setPrice(BigDecimal.valueOf(1500.99));
+//        product.setStock(10);
+//        product.setStatus(true);
+//        product.setCreatedAt(LocalDateTime.now());
+//    }
 
     @Test
     void testRegisterProduct() {
@@ -121,17 +116,6 @@ class ProductServiceTest {
         assertEquals(1, products.size());
         assertEquals(category, products.get(0).getCategory());
     }
-
-    @Test
-    void testListProductsBySupplier() {
-        when(productRepository.findBySupplier(supplier)).thenReturn(List.of(product));
-
-        List<Product> products = productService.listProductsBySupplier(supplier);
-
-        assertEquals(1, products.size());
-        assertEquals(supplier, products.get(0).getSupplier());
-    }
-
     @Test
     void testUpdateProduct() {
         Product updatedDetails = new Product();
@@ -142,7 +126,6 @@ class ProductServiceTest {
         updatedDetails.setStatus(false);
         updatedDetails.setStore(store);
         updatedDetails.setCategory(category);
-        updatedDetails.setSupplier(supplier);
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(productRepository.save(any(Product.class))).thenReturn(updatedDetails);

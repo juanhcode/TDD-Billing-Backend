@@ -4,7 +4,6 @@ import com.tdd.billing.dto.ProductDTO;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
-import com.tdd.billing.entities.Supplier;
 import com.tdd.billing.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +33,6 @@ public class ProductController {
 
         Store s = new Store(); s.setId(dto.getStoreId()); p.setStore(s);
         Category c = new Category(); c.setId(dto.getCategoryId()); p.setCategory(c);
-        Supplier sup = new Supplier(); sup.setId(dto.getSupplierId()); p.setSupplier(sup);
 
         p.setCreatedAt(dto.getCreatedAt());
         return p;
@@ -50,7 +48,6 @@ public class ProductController {
         dto.setStatus(p.getStatus());
         dto.setStoreId(p.getStore().getId());
         dto.setCategoryId(p.getCategory().getId());
-        dto.setSupplierId(p.getSupplier().getId());
         dto.setCreatedAt(p.getCreatedAt());
         return dto;
     }
@@ -108,16 +105,6 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getByCategory(@PathVariable Long categoryId) {
         Category c = new Category(); c.setId(categoryId);
         List<ProductDTO> dtos = productService.listProductsByCategory(c)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-
-    @GetMapping("/supplier/{supplierId}")
-    public ResponseEntity<List<ProductDTO>> getBySupplier(@PathVariable Long supplierId) {
-        Supplier sup = new Supplier(); sup.setId(supplierId);
-        List<ProductDTO> dtos = productService.listProductsBySupplier(sup)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
