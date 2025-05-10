@@ -25,7 +25,7 @@ public class Category {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 255)
     private String name;
 
     @Column(columnDefinition = "text")
@@ -45,4 +45,3 @@ public class Category {
         }
     }
 }
-
