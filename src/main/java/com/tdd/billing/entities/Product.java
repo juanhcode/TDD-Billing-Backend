@@ -1,6 +1,5 @@
 package com.tdd.billing.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,6 +30,9 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -42,7 +44,16 @@ public class Product {
     private BigDecimal price;
 
     @Column(nullable = false)
-    private Integer stock;
+    private Integer stock = 0;
+
+    @Column(columnDefinition = "text")
+    private String url;
+
+    @Column(name = "rating_rate", precision = 3, scale = 2)
+    private BigDecimal ratingRate = BigDecimal.ZERO;
+
+    @Column(name = "rating_count")
+    private Integer ratingCount = 0;
 
     @Column(nullable = false)
     private Boolean status = true;

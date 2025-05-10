@@ -1,107 +1,84 @@
 package com.tdd.billing.controllers;
 
-import com.tdd.billing.dto.CategoryDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
+import com.tdd.billing.repositories.StoreRepository;
 import com.tdd.billing.services.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
+
+    @Autowired
+    private StoreRepository storeRepository;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    private Category convertToEntity(CategoryDTO dto) {
-        Category c = new Category();
-        c.setId(dto.getId());
-        c.setName(dto.getName());
-        c.setDescription(dto.getDescription());
-        c.setStatus(dto.getStatus());
-
-        Store store = new Store();
-        store.setId(dto.getStoreId());
-        c.setStore(store);
-
-        c.setCreatedAt(dto.getCreatedAt());
-        return c;
-    }
-
-    private CategoryDTO convertToDTO(Category c) {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setId(c.getId());
-        dto.setName(c.getName());
-        dto.setDescription(c.getDescription());
-        dto.setStatus(c.getStatus());
-        dto.setStoreId(c.getStore().getId());
-        dto.setCreatedAt(c.getCreatedAt());
-        return dto;
-    }
-
     @PostMapping
-    public ResponseEntity<CategoryDTO> register(@RequestBody CategoryDTO dto) {
-        Category saved = categoryService.registerCategory(convertToEntity(dto));
-        return ResponseEntity.ok(convertToDTO(saved));
+    public ResponseEntity<Category> register(@RequestBody Category category) {
+        // Verificar si la tienda existe
+        Store store = storeRepository.findById(category.getStore().getId())
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+
+        // Asignar la tienda a la categoría
+        category.setStore(store);
+
+        // Guardar la categoría
+        Category savedCategory = categoryService.registerCategory(category);
+        return ResponseEntity.ok(savedCategory);
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> listActiveCategories() {
-        List<CategoryDTO> dtos = categoryService.listActiveCategories()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<List<Category>> listActiveCategories() {
+        List<Category> categories = categoryService.listActiveCategories();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<Category> getById(@PathVariable Long id) {
         Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(c -> ResponseEntity.ok(convertToDTO(c)))
+        return category.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<CategoryDTO> getByName(@PathVariable String name) {
+    public ResponseEntity<Category> getByName(@PathVariable String name) {
         Optional<Category> category = categoryService.getCategoryByName(name);
-        return category.map(c -> ResponseEntity.ok(convertToDTO(c)))
+        return category.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<CategoryDTO>> getByStore(@PathVariable Long storeId) {
+    public ResponseEntity<List<Category>> getByStore(@PathVariable Long storeId) {
         Store store = new Store();
         store.setId(storeId);
-        List<CategoryDTO> dtos = categoryService.listCategoriesByStore(store)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+        List<Category> categories = categoryService.listCategoriesByStore(store);
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/store/{storeId}/active")
-    public ResponseEntity<List<CategoryDTO>> getActiveByStore(@PathVariable Long storeId) {
+    public ResponseEntity<List<Category>> getActiveByStore(@PathVariable Long storeId) {
         Store store = new Store();
         store.setId(storeId);
-        List<CategoryDTO> dtos = categoryService.listActiveCategoriesByStore(store)
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+        List<Category> categories = categoryService.listActiveCategoriesByStore(store);
+        return ResponseEntity.ok(categories);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @RequestBody CategoryDTO dto) {
-        Category updated = categoryService.updateCategory(id, convertToEntity(dto));
-        return ResponseEntity.ok(convertToDTO(updated));
+    public ResponseEntity<Category> update(@PathVariable Long id, @RequestBody Category category) {
+        category.setId(id);  // Asegúrate de que el ID de la categoría sea correcto
+        Category updated = categoryService.updateCategory(id, category);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
@@ -110,4 +87,3 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 }
-

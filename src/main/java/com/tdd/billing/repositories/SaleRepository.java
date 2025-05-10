@@ -57,4 +57,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // Método para obtener las ventas más recientes
     List<Sale> findByStatusNot(Sale.SaleStatus status);
+
+    Long countByCreatedAtBetween(LocalDateTime createdAtAfter, LocalDateTime createdAtBefore);
 }
