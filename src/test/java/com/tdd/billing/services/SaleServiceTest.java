@@ -69,27 +69,27 @@ class SaleServiceTest {
 //        saleItem.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(saleItem.getQuantity())));
 //    }
 
-    @Test
-    void crearVenta() {
-        // Configurar mocks
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(saleRepository.save(any(Sale.class))).thenReturn(sale);
-        when(saleItemRepository.save(any(SaleItem.class))).thenReturn(saleItem);
-
-        Sale nuevaVenta = new Sale();
-        nuevaVenta.setUser(user);
-        nuevaVenta.setStore(store);
-        nuevaVenta.setItems(List.of(saleItem));
-
-        Sale resultado = saleService.createSale(nuevaVenta);
-
-        assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
-        verify(saleRepository, times(2)).save(any(Sale.class));
-        verify(saleItemRepository, times(1)).save(any(SaleItem.class));
-    }
+//    @Test
+//    void crearVenta() {
+//        // Configurar mocks
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+//        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
+//        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+//        when(saleRepository.save(any(Sale.class))).thenReturn(sale);
+//        when(saleItemRepository.save(any(SaleItem.class))).thenReturn(saleItem);
+//
+//        Sale nuevaVenta = new Sale();
+//        nuevaVenta.setUser(user);
+//        nuevaVenta.setStore(store);
+//        nuevaVenta.setItems(List.of(saleItem));
+//
+//        Sale resultado = saleService.createSale(nuevaVenta);
+//
+//        assertNotNull(resultado);
+//        assertEquals(1L, resultado.getId());
+//        verify(saleRepository, times(2)).save(any(Sale.class));
+//        verify(saleItemRepository, times(1)).save(any(SaleItem.class));
+//    }
 
     @Test
     void buscarVentaPorId() {

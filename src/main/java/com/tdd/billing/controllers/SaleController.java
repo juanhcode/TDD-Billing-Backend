@@ -1,5 +1,5 @@
 package com.tdd.billing.controllers;
-
+import com.tdd.billing.dto.SaleRequestDTO;
 import com.tdd.billing.entities.*;
 import com.tdd.billing.services.SaleService;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,10 @@ public class SaleController {
     }
 
     @PostMapping
-    public ResponseEntity<Sale> createSale(@RequestBody Sale sale) {
-        return ResponseEntity.ok(saleService.createSale(sale));
+    public ResponseEntity<Sale> createSale(@RequestBody SaleRequestDTO saleRequest) {
+        return ResponseEntity.ok(saleService.createSale(saleRequest));
     }
+
 
     @GetMapping
     public ResponseEntity<List<Sale>> listActiveSales() {

@@ -1,12 +1,11 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.SaleRequestDTO;
 import com.tdd.billing.entities.*;
 import com.tdd.billing.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,42 +16,32 @@ public class SaleService {
     private final SaleItemRepository saleItemRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final ProductRepository productRepository;
 
     public SaleService(SaleRepository saleRepository,
                        SaleItemRepository saleItemRepository,
                        UserRepository userRepository,
-                       StoreRepository storeRepository,
-                       ProductRepository productRepository) {
+                       StoreRepository storeRepository) {
         this.saleRepository = saleRepository;
         this.saleItemRepository = saleItemRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
-        this.productRepository = productRepository;
     }
 
     @Transactional
-    public Sale createSale(Sale requestSale) {
-        // Validar relaciones
-        User user = userRepository.findById(requestSale.getUser().getId())
+    public Sale createSale(SaleRequestDTO requestSale) {
+        User user = userRepository.findById(requestSale.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-        Store store = storeRepository.findById(requestSale.getStore().getId())
+        Store store = storeRepository.findById(requestSale.getStoreId())
                 .orElseThrow(() -> new EntityNotFoundException("Tienda no encontrada"));
-
-
         Sale sale = new Sale();
         sale.setUser(user);
         sale.setStore(store);
         sale.setSaleDate(LocalDateTime.now());
-        sale.setStatus(Sale.SaleStatus.COMPLETED);
-
-        for (SaleItem item : requestSale.getItems()) {
-            System.out.println("Item" + item.toString());
-        }
-        return null;
+        sale.setStatus(requestSale.getStatus());
+        sale.setPaymentMethod(requestSale.getPaymentMethod());
+        sale.setTotalAmount(requestSale.getTotalAmount());
+        return saleRepository.save(sale);
     }
-
-
 
     public List<Sale> listarVentasActivas() {
         return saleRepository.findByStatusNot(Sale.SaleStatus.CANCELLED);

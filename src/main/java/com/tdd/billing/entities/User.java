@@ -37,7 +37,7 @@ public class User {
     private boolean status = true;
 
     @Column(nullable = false, name = "phone_number")
-    private String photoNumber;
+    private String phoneNumber;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -51,7 +51,7 @@ public class User {
                 ", role=" + role +
                 ", photoUrl='" + photoUrl + '\'' +
                 ", status=" + status +
-                ", phoneNumber='" + photoNumber + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
