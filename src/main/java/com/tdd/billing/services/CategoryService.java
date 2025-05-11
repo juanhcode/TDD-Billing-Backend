@@ -17,19 +17,12 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    // Registrar una nueva categoría
     public Category registerCategory(Category category) {
         return categoryRepository.save(category);
     }
 
-    // Obtener una categoría por ID
     public Optional<Category> getCategoryById(Long id) {
         return categoryRepository.findById(id);
-    }
-
-    // Obtener una categoría por nombre
-    public Optional<Category> getCategoryByName(String name) {
-        return categoryRepository.findByName(name);
     }
 
     // Listar todas las categorías activas

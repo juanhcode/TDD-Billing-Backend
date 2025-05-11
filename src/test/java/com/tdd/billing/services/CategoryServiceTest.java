@@ -71,16 +71,6 @@ class CategoryServiceTest {
     }
 
     @Test
-    void testGetCategoryByName() {
-        when(categoryRepository.findByName("Electrónicos")).thenReturn(Optional.of(category));
-
-        Optional<Category> found = categoryService.getCategoryByName("Electrónicos");
-
-        assertTrue(found.isPresent());
-        assertEquals("Electrónicos", found.get().getName());
-    }
-
-    @Test
     void testListActiveCategories() {
         when(categoryRepository.findByStatusTrue()).thenReturn(List.of(category));
 
