@@ -87,7 +87,7 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User updatedUser = new User(1L, "Juan Updated", "juan_updated@mail.com", "newpass", UserRole.SELLER,"", true,"12121", null);
+        User updatedUser = new User(1L, "Juan Updated", "juan_updated@mail.com", "newpass", UserRole.CUSTOMER,"", true,"12121", null);
         User result = userService.updateUser(1L, updatedUser);
 
         assertNotNull(result);
