@@ -33,8 +33,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<Sale> findByPaymentMethod(String paymentMethod);
 
     // Búsqueda de ventas por producto (usando items de venta)
-    @Query("SELECT DISTINCT s FROM Sale s JOIN s.items i WHERE i.product.id = :productId")
-    List<Sale> findByProductId(@Param("productId") Long productId);
+
 
     // Obtener el total de ventas por período
     @Query("SELECT SUM(s.totalAmount) FROM Sale s WHERE s.saleDate BETWEEN :start AND :end")
