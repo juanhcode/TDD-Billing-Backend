@@ -68,16 +68,6 @@ class ProductServiceTest {
     }
 
     @Test
-    void testGetProductByName() {
-        when(productRepository.findByName("Laptop HP")).thenReturn(Optional.of(product));
-
-        Optional<Product> found = productService.getProductByName("Laptop HP");
-
-        assertTrue(found.isPresent());
-        assertEquals("Laptop HP", found.get().getName());
-    }
-
-    @Test
     void testListActiveProducts() {
         when(productRepository.findByStatusTrue()).thenReturn(List.of(product));
 

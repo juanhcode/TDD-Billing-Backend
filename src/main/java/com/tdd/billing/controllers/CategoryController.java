@@ -51,13 +51,6 @@ public class CategoryController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Category> getByName(@PathVariable String name) {
-        Optional<Category> category = categoryService.getCategoryByName(name);
-        return category.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<Category>> getByStore(@PathVariable Long storeId) {
         Store store = new Store();
