@@ -38,12 +38,6 @@ public class ProductController {
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Product> getByName(@PathVariable String name) {
-        Optional<Product> product = productService.getProductByName(name);
-        return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<Product>> getByStore(@PathVariable Long storeId) {
         Store store = new Store();

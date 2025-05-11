@@ -28,10 +28,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    // Obtener un producto por nombre
-    public Optional<Product> getProductByName(String name) {
-        return productRepository.findByName(name);
-    }
 
     // Listar todos los productos activos
     public List<Product> listActiveProducts() {
@@ -71,8 +67,10 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    // Eliminar producto
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setStatus(false);
+        productRepository.save(product);
     }
 }
