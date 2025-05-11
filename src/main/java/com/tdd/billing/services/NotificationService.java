@@ -1,5 +1,6 @@
 package com.tdd.billing.services;
-
+import com.tdd.billing.dto.NotificationRequestDTO;
+import com.tdd.billing.dto.NotificationResponseDTO;
 import com.tdd.billing.entities.Notification;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.repositories.NotificationRepository;
@@ -23,52 +24,43 @@ public class NotificationService {
         this.productRepository = productRepository;
     }
 
-    // Crear una nueva notificación
     @Transactional
-    public Notification crearNotificacion(Long productId, String title, String message) {
-        Product product = productRepository.findById(productId)
+    public NotificationResponseDTO crearNotificacionDTO(NotificationRequestDTO request) {
+        Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
 
-
         Notification notificacion = new Notification();
+        notificacion.setUserId(request.getUserId());
         notificacion.setProduct(product);
-        notificacion.setTitle(title);
-        notificacion.setMessage(message);
-        notificacion.setRead(false);
+        notificacion.setTitle(request.getTitle());
+        notificacion.setMessage(request.getMessage());
+        notificacion.setType(request.getType());
+        notificacion.setIsRead(false);
         notificacion.setCreatedAt(LocalDateTime.now());
 
-        return notificationRepository.save(notificacion);
+        Notification saved = notificationRepository.save(notificacion);
+
+        return mapToResponseDTO(saved);
     }
 
-    // Listar todas las notificaciones
-    public List<Notification> listarTodas() {
-        return notificationRepository.findAllByOrderByCreatedAtDesc();
+    public List<NotificationResponseDTO> listarPorUsuario(Long userId) {
+        return notificationRepository.findByUserId(userId).stream()
+                .map(this::mapToResponseDTO)
+                .toList();
     }
 
-    // Listar notificaciones no leídas
-    public List<Notification> listarNoLeidas() {
-        return notificationRepository.findByIsReadFalse();
+    private NotificationResponseDTO mapToResponseDTO(Notification notification) {
+        NotificationResponseDTO dto = new NotificationResponseDTO();
+        dto.setId(notification.getId());
+        dto.setUserId(notification.getUserId());
+        dto.setProductId(notification.getProduct() != null ? notification.getProduct().getId() : null);
+        dto.setTitle(notification.getTitle());
+        dto.setMessage(notification.getMessage());
+        dto.setType(notification.getType());
+        dto.setIsRead(notification.getIsRead());
+        dto.setCreatedAt(notification.getCreatedAt());
+        return dto;
     }
 
-    // Listar notificaciones por producto
-    public List<Notification> listarPorProducto(Long productId) {
-        return notificationRepository.findByProductId(productId);
-    }
-
-    // Marcar una notificación como leída
-    @Transactional
-    public Notification marcarComoLeida(Long notificationId) {
-        Notification notificacion = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new EntityNotFoundException("Notificación no encontrada"));
-
-        notificacion.setRead(true);
-        return notificationRepository.save(notificacion);
-    }
-
-    // Eliminar una notificación
-    @Transactional
-    public void eliminarNotificacion(Long id) {
-        notificationRepository.deleteById(id);
-    }
 }
 
