@@ -21,7 +21,7 @@ public class SaleController {
 
     @PostMapping
     public ResponseEntity<Sale> createSale(@RequestBody Sale sale) {
-        return ResponseEntity.ok(saleService.crearVenta(sale));
+        return ResponseEntity.ok(saleService.createSale(sale));
     }
 
     @GetMapping

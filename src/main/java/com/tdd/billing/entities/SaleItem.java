@@ -20,7 +20,7 @@ public class SaleItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "sale_id", nullable = false)
     private Sale sale;  // Relación Many-to-One con Venta
 
@@ -36,4 +36,16 @@ public class SaleItem {
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;  // Cantidad * Precio unitario
+
+    @Override
+    public String toString() {
+        return "SaleItem{" +
+                "id=" + id +
+                ", sale=" + sale +
+                ", product=" + product +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", subtotal=" + subtotal +
+                '}';
+    }
 }

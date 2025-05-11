@@ -83,7 +83,7 @@ class SaleServiceTest {
         nuevaVenta.setStore(store);
         nuevaVenta.setItems(List.of(saleItem));
 
-        Sale resultado = saleService.crearVenta(nuevaVenta);
+        Sale resultado = saleService.createSale(nuevaVenta);
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());

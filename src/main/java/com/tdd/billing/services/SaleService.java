@@ -32,39 +32,27 @@ public class SaleService {
     }
 
     @Transactional
-    public Sale crearVenta(Sale venta) {
+    public Sale createSale(Sale requestSale) {
         // Validar relaciones
-        User user = userRepository.findById(venta.getUser().getId())
+        User user = userRepository.findById(requestSale.getUser().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-        Store store = storeRepository.findById(venta.getStore().getId())
+        Store store = storeRepository.findById(requestSale.getStore().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Tienda no encontrada"));
 
-        venta.setUser(user);
-        venta.setStore(store);
-        venta.setSaleDate(LocalDateTime.now());
-        venta.setStatus(Sale.SaleStatus.COMPLETED);
 
-        // Guardar la venta primero para generar ID
-        Sale ventaGuardada = saleRepository.save(venta);
+        Sale sale = new Sale();
+        sale.setUser(user);
+        sale.setStore(store);
+        sale.setSaleDate(LocalDateTime.now());
+        sale.setStatus(Sale.SaleStatus.COMPLETED);
 
-        // Procesar items
-        BigDecimal total = BigDecimal.ZERO;
-        for (SaleItem item : venta.getItems()) {
-            Product product = productRepository.findById(item.getProduct().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado: " + item.getProduct().getId()));
-
-            item.setSale(ventaGuardada);
-            item.setProduct(product);
-            item.setUnitPrice(product.getPrice());
-            item.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
-
-            total = total.add(item.getSubtotal());
-            saleItemRepository.save(item);
+        for (SaleItem item : requestSale.getItems()) {
+            System.out.println("Item" + item.toString());
         }
-
-        ventaGuardada.setTotalAmount(total);
-        return saleRepository.save(ventaGuardada);
+        return null;
     }
+
+
 
     public List<Sale> listarVentasActivas() {
         return saleRepository.findByStatusNot(Sale.SaleStatus.CANCELLED);
