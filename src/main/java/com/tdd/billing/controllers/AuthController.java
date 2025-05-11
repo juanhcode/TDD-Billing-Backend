@@ -34,6 +34,7 @@ public class AuthController {
             User user = new User();
             user.setId(usuario.getId());
             user.setEmail(usuario.getEmail());
+            user.setRole(usuario.getRole());
             // No incluyas la contraseña a menos que sea estrictamente necesario
 
             // Generar el token JWT
