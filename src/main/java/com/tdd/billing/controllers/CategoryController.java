@@ -1,5 +1,6 @@
 package com.tdd.billing.controllers;
 
+import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.StoreRepository;
@@ -52,18 +53,18 @@ public class CategoryController {
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<Category>> getByStore(@PathVariable Long storeId) {
+    public ResponseEntity<List<CategoryResponseDTO>> getByStore(@PathVariable Long storeId) {
         Store store = new Store();
         store.setId(storeId);
-        List<Category> categories = categoryService.listCategoriesByStore(store);
+        List<CategoryResponseDTO> categories = categoryService.listCategoriesByStoreDTO(store);
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/store/{storeId}/active")
-    public ResponseEntity<List<Category>> getActiveByStore(@PathVariable Long storeId) {
+    public ResponseEntity<List<CategoryResponseDTO>> getActiveByStore(@PathVariable Long storeId) {
         Store store = new Store();
         store.setId(storeId);
-        List<Category> categories = categoryService.listActiveCategoriesByStore(store);
+        List<CategoryResponseDTO> categories = categoryService.listActiveCategoriesByStoreDTO(store);
         return ResponseEntity.ok(categories);
     }
 

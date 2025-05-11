@@ -1,4 +1,6 @@
 package com.tdd.billing.entities;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -43,6 +45,18 @@ public class Sale {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     public enum SaleStatus {
-        PENDING, COMPLETED, CANCELLED, REFUNDED
+        PENDING,
+        COMPLETED,
+        CANCELLED;
+
+        @JsonCreator
+        public static SaleStatus fromString(String value) {
+            return SaleStatus.valueOf(value.toUpperCase());
+        }
+
+        @JsonValue
+        public String toValue() {
+            return this.name();
+        }
     }
 }

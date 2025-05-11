@@ -1,5 +1,6 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.CategoryRepository;
@@ -25,22 +26,22 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    // Listar todas las categorías activas
     public List<Category> listActiveCategories() {
         return categoryRepository.findByStatusTrue();
     }
 
-    // Listar categorías por tienda
-    public List<Category> listCategoriesByStore(Store store) {
-        return categoryRepository.findByStore(store);
+
+    public List<CategoryResponseDTO> listCategoriesByStoreDTO(Store store) {
+        return categoryRepository.findByStore(store).stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
-    // Listar categorías activas por tienda
-    public List<Category> listActiveCategoriesByStore(Store store) {
-        return categoryRepository.findByStoreAndStatusTrue(store);
+    public List<CategoryResponseDTO> listActiveCategoriesByStoreDTO(Store store) {
+        return categoryRepository.findByStoreAndStatusTrue(store).stream()
+                .map(this::mapToDTO)
+                .toList();
     }
-
-    // Actualizar una categoría existente
     public Category updateCategory(Long id, Category categoryDetails) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -53,9 +54,19 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    // Eliminar una categoría
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+
+    private CategoryResponseDTO mapToDTO(Category category) {
+        return new CategoryResponseDTO(
+                category.getId(),
+                category.getName(),
+                category.getDescription(),
+                category.getStatus(),
+                category.getCreatedAt()
+        );
     }
 }
 

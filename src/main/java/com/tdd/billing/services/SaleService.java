@@ -93,25 +93,4 @@ public class SaleService {
         return saleRepository.findBySaleDateBetween(inicio, fin);
     }
 
-    public List<SaleItem> obtenerItemsDeVenta(Long ventaId) {
-        if (!saleRepository.existsById(ventaId)) {
-            throw new EntityNotFoundException("Venta no encontrada");
-        }
-        return saleItemRepository.findBySaleId(ventaId);
-    }
-
-    @Transactional
-    public void eliminarVenta(Long id) {
-        Sale venta = saleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Venta no encontrada"));
-
-        if (venta.getStatus() != Sale.SaleStatus.CANCELLED) {
-            throw new IllegalStateException("Solo se pueden eliminar ventas canceladas");
-        }
-
-        // Primero eliminar items
-        saleItemRepository.deleteBySaleId(id);
-        // Luego eliminar la venta
-        saleRepository.deleteById(id);
-    }
 }
