@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,75 +32,74 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1L, "Juan", "juan@mail.com", "123456", UserRole.CUSTOMER,"", true,"12121", null);
+        user = new User();
+        user.setId(1L);
+        user.setName("Juan");
+        user.setEmail("juan@mail.com");
+        user.setPassword("123456");
+        user.setRole(UserRole.ADMIN);
+        user.setPhotoUrl("http://photo.com/pic.jpg");
+        user.setStatus(true);
+        user.setPhoneNumber("123456789");
     }
 
     @Test
-    void registrarUsuario() {
-        when(passwordEncoder.encode("123456")).thenReturn("hashedPassword");
+    void testRegisterUser() {
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User newUser = new User(null, "Juan", "juan@mail.com", "123456", UserRole.CUSTOMER,"", true,"12121", null);
-        User result = userService.registerUser(newUser);
+        User result = userService.registerUser(user);
 
-        assertNotNull(result);
-        assertEquals("Juan", result.getName());
-        verify(userRepository, times(1)).save(any(User.class));
-        System.out.println("Test registrarUsuario pasó exitosamente ✅");
-    }
-
-
-//    @Test
-//    void loginUsuario_Exitoso() {
-//        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
-//        when(passwordEncoder.matches("123456", user.getPassword())).thenReturn(true);
-//
-//        User result = userService.login("juan@mail.com", "123456");
-//
-//        assertNotNull(result);
-//        assertEquals("Juan", result.getName());
-//        System.out.println("Test registrarUsuario pasó exitosamente ✅");
-//    }
-//
-//    @Test
-//    void loginUsuario_Fallido() {
-//        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.empty());
-//
-//        assertThrows(RuntimeException.class, () -> userService.login("juan@mail.com", "123456"));
-//        System.out.println("Test registrarUsuario pasó exitosamente ✅");
-//    }
-
-    @Test
-    void listarUsuariosActivos() {
-        when(userRepository.findByStatusTrue()).thenReturn(List.of(user));
-
-        List<User> result = userService.listarUsuariosActivos();
-
-        assertEquals(1, result.size());
-        assertEquals("Juan", result.get(0).getName());
-        System.out.println("Test registrarUsuario pasó exitosamente ✅");
+        assertEquals(user.getEmail(), result.getEmail());
+        verify(passwordEncoder).encode("123456"); // Verificar que se haya llamado al encoder
+        verify(userRepository).save(any(User.class)); // Verificar que el repositorio ha guardado el usuario
     }
 
     @Test
-    void actualizarUsuario() {
+    void testFindById_UserFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User updatedUser = new User(1L, "Juan Updated", "juan_updated@mail.com", "newpass", UserRole.CUSTOMER,"", true,"12121", null);
-        User result = userService.updateUser(1L, updatedUser);
+        Optional<User> found = userService.findById(1L);
 
-        assertNotNull(result);
-        assertEquals("Juan Updated", result.getName());
-        System.out.println("Test registrarUsuario pasó exitosamente ✅");
+        assertTrue(found.isPresent());
+        assertEquals(user.getEmail(), found.get().getEmail());
     }
 
     @Test
-    void eliminarUsuario() {
-        doNothing().when(userRepository).deleteById(1L);
+    void testUpdateUser_Success() {
+        User updatedInfo = new User();
+        updatedInfo.setName("Pedro");
+        updatedInfo.setEmail("pedro@mail.com");
+        updatedInfo.setPassword("newPass");
+        updatedInfo.setRole(UserRole.CUSTOMER);
 
-        userService.deleteUser(1L);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        verify(userRepository, times(1)).deleteById(1L);
-        System.out.println("Test registrarUsuario pasó exitosamente ✅");
+        User updated = userService.updateUser(1L, updatedInfo);
+
+        assertEquals("Pedro", updated.getName());
+        assertEquals("pedro@mail.com", updated.getEmail());
+        verify(userRepository).save(any(User.class)); // Verificar que el repositorio ha guardado la actualización
+    }
+
+    @Test
+    void testAuthenticate_Success() {
+        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("123456", user.getPassword())).thenReturn(true);
+
+        User authenticated = userService.authenticate("juan@mail.com", "123456");
+
+        assertNotNull(authenticated);
+        assertEquals("juan@mail.com", authenticated.getEmail());
+    }
+
+    @Test
+    void testAuthenticate_InvalidCredentials() {
+        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrong", user.getPassword())).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> userService.authenticate("juan@mail.com", "wrong"));
     }
 }

@@ -31,7 +31,14 @@ public class SaleItemService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
 
+
+        if (product.getStock() < request.getQuantity()) {
+            throw new IllegalStateException("Stock insuficiente para el producto: " + product.getName());
+        }
+
+
         BigDecimal subtotal = request.getUnitPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
+
 
         SaleItem saleItem = new SaleItem();
         saleItem.setSale(sale);
@@ -41,6 +48,10 @@ public class SaleItemService {
         saleItem.setSubtotal(subtotal);
 
         SaleItem savedItem = saleItemRepository.save(saleItem);
+
+
+        product.setStock(product.getStock() - request.getQuantity());
+        productRepository.save(product);
 
         return toResponseDTO(savedItem);
     }

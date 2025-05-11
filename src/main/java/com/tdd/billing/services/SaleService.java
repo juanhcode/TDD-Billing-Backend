@@ -1,5 +1,5 @@
 package com.tdd.billing.services;
-
+import com.tdd.billing.dto.NotificationRequestDTO;
 import com.tdd.billing.dto.SaleRequestDTO;
 import com.tdd.billing.entities.*;
 import com.tdd.billing.repositories.*;
@@ -13,18 +13,19 @@ import java.util.Optional;
 @Service
 public class SaleService {
     private final SaleRepository saleRepository;
-    private final SaleItemRepository saleItemRepository;
+
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final NotificationService notificationService;
+
 
     public SaleService(SaleRepository saleRepository,
-                       SaleItemRepository saleItemRepository,
                        UserRepository userRepository,
-                       StoreRepository storeRepository) {
+                       StoreRepository storeRepository, NotificationService notificationService) {
         this.saleRepository = saleRepository;
-        this.saleItemRepository = saleItemRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -33,6 +34,7 @@ public class SaleService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         Store store = storeRepository.findById(requestSale.getStoreId())
                 .orElseThrow(() -> new EntityNotFoundException("Tienda no encontrada"));
+
         Sale sale = new Sale();
         sale.setUser(user);
         sale.setStore(store);
@@ -40,8 +42,21 @@ public class SaleService {
         sale.setStatus(requestSale.getStatus());
         sale.setPaymentMethod(requestSale.getPaymentMethod());
         sale.setTotalAmount(requestSale.getTotalAmount());
-        return saleRepository.save(sale);
+        Sale savedSale = saleRepository.save(sale);
+
+        // Crear notificación
+        NotificationRequestDTO notificationRequest = new NotificationRequestDTO();
+        notificationRequest.setUserId(user.getId());
+        notificationRequest.setTitle("Nueva venta creada");
+        notificationRequest.setMessage("Se ha registrado una nueva venta por $" + savedSale.getTotalAmount());
+        notificationRequest.setType("SALE");
+        notificationRequest.setProductId(2L);
+
+        notificationService.crearNotificacionDTO(notificationRequest);
+
+        return savedSale;
     }
+
 
     public List<Sale> listarVentasActivas() {
         return saleRepository.findByStatusNot(Sale.SaleStatus.CANCELLED);
