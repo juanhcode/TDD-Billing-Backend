@@ -56,11 +56,6 @@ public class SaleController {
         );
     }
 
-    @GetMapping("/{saleId}/items")
-    public ResponseEntity<List<SaleItem>> getSaleItems(@PathVariable Long saleId) {
-        return ResponseEntity.ok(saleService.obtenerItemsDeVenta(saleId));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Sale> updateSale(@PathVariable Long id, @RequestBody Sale sale) {
         return ResponseEntity.ok(saleService.actualizarVenta(id, sale));
@@ -69,12 +64,6 @@ public class SaleController {
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Sale> cancelSale(@PathVariable Long id) {
         return ResponseEntity.ok(saleService.cancelarVenta(id));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSale(@PathVariable Long id) {
-        saleService.eliminarVenta(id);
-        return ResponseEntity.noContent().build();
     }
 
 }
