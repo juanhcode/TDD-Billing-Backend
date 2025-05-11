@@ -44,6 +44,15 @@ public class User {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", status=" + status +
+                ", phoneNumber='" + photoNumber + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

@@ -61,5 +61,22 @@ public class Store {
             this.createdAt = LocalDateTime.now();
         }
     }
+
+    @Override
+    public String toString() {
+        return "Store{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", email='" + email + '\'' +
+                ", contact='" + contact + '\'' +
+                ", nit='" + nit + '\'' +
+                ", logo='" + logo + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", address='" + address + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
 
