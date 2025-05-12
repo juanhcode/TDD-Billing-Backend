@@ -17,8 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, name = "first_name")
+    private String firstName;
+
+    @Column(nullable = false, name = "last_name")
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -46,8 +49,10 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", role=" + role +
                 ", photoUrl='" + photoUrl + '\'' +
                 ", status=" + status +

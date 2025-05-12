@@ -30,7 +30,8 @@ class UserControllerTest {
     void setUp() {
         mockUser = new User();
         mockUser.setId(1L);
-        mockUser.setName("Test User");
+        mockUser.setFirstName("Test");
+        mockUser.setLastName("User");
         mockUser.setEmail("test@example.com");
     }
 
@@ -83,7 +84,8 @@ class UserControllerTest {
     void update_shouldReturnUpdatedUser() {
         User updatedUser = new User();
         updatedUser.setId(1L);
-        updatedUser.setName("Updated User");
+        updatedUser.setFirstName("Updated");
+        updatedUser.setLastName("User");
 
         when(userService.updateUser(1L, updatedUser)).thenReturn(updatedUser);
 
