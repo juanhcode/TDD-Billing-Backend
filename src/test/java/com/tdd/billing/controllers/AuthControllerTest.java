@@ -48,7 +48,8 @@ class AuthControllerTest {
         user = new User();
         user.setId(1L);
         user.setEmail("hoyos@gmail.com");
-        user.setName("Test User");
+        user.setFirstName("Juan");
+        user.setLastName("Hoyos");
         user.setRole(UserRole.ADMIN);
     }
 

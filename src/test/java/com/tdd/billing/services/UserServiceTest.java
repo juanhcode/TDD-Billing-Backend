@@ -34,7 +34,8 @@ class UserServiceTest {
     void setUp() {
         user = new User();
         user.setId(1L);
-        user.setName("Juan");
+        user.setFirstName("Juan");
+        user.setLastName("Pérez");
         user.setEmail("juan@mail.com");
         user.setPassword("123456");
         user.setRole(UserRole.ADMIN);
@@ -68,7 +69,8 @@ class UserServiceTest {
     @Test
     void testUpdateUser_Success() {
         User updatedInfo = new User();
-        updatedInfo.setName("Pedro");
+        updatedInfo.setFirstName("Pedro");
+        updatedInfo.setLastName("Gómez");
         updatedInfo.setEmail("pedro@mail.com");
         updatedInfo.setPassword("newPass");
         updatedInfo.setRole(UserRole.CUSTOMER);
@@ -79,7 +81,7 @@ class UserServiceTest {
 
         User updated = userService.updateUser(1L, updatedInfo);
 
-        assertEquals("Pedro", updated.getName());
+        assertEquals("Pedro", updated.getFirstName());
         assertEquals("pedro@mail.com", updated.getEmail());
         verify(userRepository).save(any(User.class)); // Verificar que el repositorio ha guardado la actualización
     }
