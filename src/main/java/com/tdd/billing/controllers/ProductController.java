@@ -1,5 +1,6 @@
 package com.tdd.billing.controllers;
 
+import com.tdd.billing.dto.ProductResponseDTO;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
@@ -39,12 +40,10 @@ public class ProductController {
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<Product>> getByStore(@PathVariable Long storeId) {
-        Store store = new Store();
-        store.setId(storeId);
-        List<Product> products = productService.listProductsByStore(store);
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductResponseDTO>> getByStore(@PathVariable Long storeId) {
+        return ResponseEntity.ok(productService.listProductsByStore(storeId));
     }
+
 
     @GetMapping("/store/{storeId}/active")
     public ResponseEntity<List<Product>> getActiveByStore(@PathVariable Long storeId) {

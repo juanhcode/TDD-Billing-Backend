@@ -1,5 +1,6 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.ProductResponseDTO;
 import com.tdd.billing.entities.*;
 import com.tdd.billing.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,12 +84,13 @@ class ProductServiceTest {
 
     @Test
     void shouldReturnProductsByStore() {
-        when(productRepository.findByStore(sampleProduct.getStore())).thenReturn(List.of(sampleProduct));
+        Long storeId = 1L;
+        when(productRepository.findByStore(any(Store.class))).thenReturn(List.of(sampleProduct));
 
-        List<Product> result = productService.listProductsByStore(sampleProduct.getStore());
+        List<ProductResponseDTO> result = productService.listProductsByStore(storeId);
 
         assertEquals(1, result.size());
-        verify(productRepository).findByStore(sampleProduct.getStore());
+        verify(productRepository).findByStore(any(Store.class));
     }
 
     @Test

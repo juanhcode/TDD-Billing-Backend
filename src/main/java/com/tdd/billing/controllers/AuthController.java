@@ -21,7 +21,7 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    @ResponseBody
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReq loginReq) {
         try {
