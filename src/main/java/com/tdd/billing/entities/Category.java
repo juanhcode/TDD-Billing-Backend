@@ -18,6 +18,11 @@ import java.time.LocalDateTime;
 @Table(name = "categories")
 public class Category {
 
+    // Constructor solo con 'id'
+    public Category(Long id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

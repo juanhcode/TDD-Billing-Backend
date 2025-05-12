@@ -1,11 +1,9 @@
 package com.tdd.billing.controllers;
-
 import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.StoreRepository;
 import com.tdd.billing.services.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +15,11 @@ import java.util.Optional;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final StoreRepository storeRepository;
 
-    @Autowired
-    private StoreRepository storeRepository;
-
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, StoreRepository storeRepository) {
         this.categoryService = categoryService;
+        this.storeRepository = storeRepository;
     }
 
     @PostMapping
