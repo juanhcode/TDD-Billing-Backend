@@ -1,9 +1,11 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.ProductResponseDTO;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.repositories.ProductRepository;
+import com.tdd.billing.utils.ProductMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,9 +37,16 @@ public class ProductService {
     }
 
     // Listar productos por tienda
-    public List<Product> listProductsByStore(Store store) {
-        return productRepository.findByStore(store);
+    public List<ProductResponseDTO> listProductsByStore(Long storeId) {
+        Store store = new Store();
+        store.setId(storeId);
+
+        return productRepository.findByStore(store)
+                .stream()
+                .map(ProductMapper::toResponseDTO)
+                .toList();
     }
+
 
     // Listar productos activos por tienda
     public List<Product> listActiveProductsByStore(Store store) {
@@ -72,5 +81,19 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         product.setStatus(false);
         productRepository.save(product);
+    }
+
+    public ProductResponseDTO convertToProductResponseDTO(Product product) {
+        ProductResponseDTO dto = new ProductResponseDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setStock(product.getStock());
+        dto.setUrl(product.getUrl());
+        dto.setRatingRate(product.getRatingRate());
+        dto.setRatingCount(product.getRatingCount());
+        dto.setStatus(product.getStatus());
+        return dto;
     }
 }
