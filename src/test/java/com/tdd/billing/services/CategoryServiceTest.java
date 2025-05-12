@@ -5,12 +5,17 @@ import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
 
     @Mock
@@ -24,8 +29,6 @@ class CategoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         sampleStore = new Store();
         sampleStore.setId(1L);
 
@@ -105,9 +108,11 @@ class CategoryServiceTest {
     @Test
     void testUpdateCategoryNotFound() {
         when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            categoryService.updateCategory(999L, sampleCategory);
-        });
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                categoryService.updateCategory(999L, sampleCategory)
+        );
+
         assertEquals("Category not found", exception.getMessage());
     }
 
