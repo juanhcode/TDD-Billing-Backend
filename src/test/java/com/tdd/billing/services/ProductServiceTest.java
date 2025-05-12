@@ -1,15 +1,22 @@
 package com.tdd.billing.services;
+
 import com.tdd.billing.entities.*;
 import com.tdd.billing.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
@@ -22,8 +29,6 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         Store store = new Store();
         store.setId(1L);
 
@@ -52,7 +57,7 @@ class ProductServiceTest {
 
         assertNotNull(result);
         assertEquals("Camisa", result.getName());
-        verify(productRepository, times(1)).save(sampleProduct);
+        verify(productRepository).save(sampleProduct);
     }
 
     @Test
@@ -68,8 +73,7 @@ class ProductServiceTest {
 
     @Test
     void shouldReturnActiveProducts() {
-        List<Product> list = List.of(sampleProduct);
-        when(productRepository.findByStatusTrue()).thenReturn(list);
+        when(productRepository.findByStatusTrue()).thenReturn(List.of(sampleProduct));
 
         List<Product> result = productService.listActiveProducts();
 
@@ -108,7 +112,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldUpdateProduct() {
+    void shouldUpdateProductIfExists() {
         Product updated = new Product();
         updated.setName("Camisa nueva");
         updated.setDescription("Descripción actualizada");
@@ -129,13 +133,14 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldThrowWhenProductNotFoundForUpdate() {
+    void shouldThrowWhenUpdatingNonExistentProduct() {
         when(productRepository.findById(99L)).thenReturn(Optional.empty());
 
         RuntimeException thrown = assertThrows(RuntimeException.class,
                 () -> productService.updateProduct(99L, sampleProduct));
 
         assertEquals("Product not found", thrown.getMessage());
+        verify(productRepository).findById(99L);
     }
 
     @Test
@@ -150,12 +155,13 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldThrowWhenProductNotFoundForDelete() {
+    void shouldThrowWhenDeletingNonExistentProduct() {
         when(productRepository.findById(99L)).thenReturn(Optional.empty());
 
         RuntimeException thrown = assertThrows(RuntimeException.class,
                 () -> productService.deleteProduct(99L));
 
         assertEquals("Product not found", thrown.getMessage());
+        verify(productRepository).findById(99L);
     }
 }
