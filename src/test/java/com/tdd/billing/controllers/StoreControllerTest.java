@@ -57,7 +57,6 @@ class StoreControllerTest {
         sampleStore.setStatus(true);
         sampleStore.setAddress("Calle Falsa 123");
         sampleStore.setCreatedAt(LocalDateTime.now());
-        sampleStore.setUserId(user);
     }
 
     @Test
@@ -89,7 +88,6 @@ class StoreControllerTest {
         Store updatedStore = new Store();
         updatedStore.setId(1L);
         updatedStore.setName("Updated Store");
-        updatedStore.setUserId(sampleStore.getUserId());
 
         when(storeService.findById(1L)).thenReturn(Optional.of(sampleStore));
         when(storeService.update(any(Store.class))).thenReturn(updatedStore);

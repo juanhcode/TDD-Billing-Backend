@@ -1,10 +1,8 @@
 package com.tdd.billing.entities;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "stores")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Store {
-
 
     public Store(Long id) {
         this.id = id;
@@ -55,11 +53,6 @@ public class Store {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Ignorar propiedades del proxy de Hibernate
-    private User userId;
-
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
@@ -84,4 +77,3 @@ public class Store {
                 '}';
     }
 }
-

@@ -17,10 +17,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "first_name")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(nullable = false, name = "last_name")
+    @Column(name = "last_name")
     private String lastName;
 
     @Column(unique = true, nullable = false)
@@ -30,20 +30,27 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "role")
+    @Column(nullable = false)
     private UserRole role;
 
-    @Column(nullable = false, name = "photo_url")
+    @Column(name = "photo_url")
     private String photoUrl;
 
     @Column(nullable = false)
-    private boolean status = true;
+    private Boolean status = true;
 
-    @Column(nullable = false, name = "phone_number")
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "address")
+    private String address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @Override
     public String toString() {
@@ -58,6 +65,8 @@ public class User {
                 ", status=" + status +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", createdAt=" + createdAt +
+                ", address='" + address + '\'' +
+                ", store=" + (store != null ? store.getId() : null) +
                 '}';
     }
 }
