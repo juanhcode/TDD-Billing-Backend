@@ -1,12 +1,14 @@
 package com.tdd.billing.controllers;
+import com.tdd.billing.dto.StoreResponseDTO;
 import com.tdd.billing.entities.Store;
+import com.tdd.billing.entities.User;
 import com.tdd.billing.services.StoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/stores")
+@RequestMapping("/api/stores")
 public class StoreController {
 
     private final StoreService storeService;
@@ -31,12 +33,6 @@ public class StoreController {
             Optional<Store> existingStore = storeService.findById(id);
             if (existingStore.isPresent()) {
                 store.setId(id);
-
-                // Aquí, si el userId no está presente en la tienda proporcionada, busca el usuario por ID
-                if (store.getUserId() == null || store.getUserId().getId() == null) {
-                    store.setUserId(existingStore.get().getUserId()); // Mantén el userId actual si no se proporciona uno nuevo
-                }
-
                 Store updatedStore = storeService.update(store);
                 return ResponseEntity.ok(updatedStore);
             } else {
@@ -47,6 +43,15 @@ public class StoreController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getStore(@PathVariable Long id) {
+        try {
+            Optional<StoreResponseDTO> storeDTO = storeService.getStoreDTOById(id);
+            return storeDTO.<ResponseEntity<Object>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).body("Store not found"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error retrieving store: " + e.getMessage());
+        }
+    }
 }
 
 
