@@ -1,5 +1,6 @@
 package com.tdd.billing.controllers;
 
+import com.tdd.billing.dto.UserResponseDTO;
 import com.tdd.billing.entities.User;
 import com.tdd.billing.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -44,4 +45,11 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<UserResponseDTO>> getUsersByStoreId(@PathVariable Long storeId) {
+        List<UserResponseDTO> users = userService.getUsersByStoreId(storeId);
+        return ResponseEntity.ok(users);
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.UserResponseDTO;
 import com.tdd.billing.entities.User;
 import com.tdd.billing.repositories.UserRepository;
+import com.tdd.billing.utils.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,4 +56,13 @@ public class UserService {
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()))
                 .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
     }
+
+
+
+    public List<UserResponseDTO> getUsersByStoreId(Long storeId) {
+        return userRepository.findByStoreId(storeId).stream()
+                .map(UserMapper::toDTO)
+                .toList();
+    }
+
 }

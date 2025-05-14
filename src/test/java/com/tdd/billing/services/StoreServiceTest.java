@@ -45,7 +45,6 @@ class StoreServiceTest {
         sampleStore.setStatus(true);
         sampleStore.setAddress("Calle Falsa 123");
         sampleStore.setCreatedAt(LocalDateTime.now());
-        sampleStore.setUserId(user);
     }
 
     @Test
