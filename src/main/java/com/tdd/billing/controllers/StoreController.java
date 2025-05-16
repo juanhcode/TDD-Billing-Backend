@@ -1,10 +1,12 @@
 package com.tdd.billing.controllers;
+import com.tdd.billing.dto.StoreRequestDTO;
 import com.tdd.billing.dto.StoreResponseDTO;
 import com.tdd.billing.entities.Store;
-import com.tdd.billing.entities.User;
+import com.tdd.billing.mappers.StoreMapper;
 import com.tdd.billing.services.StoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @RestController
@@ -18,14 +20,17 @@ public class StoreController {
     }
 
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody Store store) {
+    public ResponseEntity<StoreResponseDTO> register(@RequestPart(name = "store") StoreRequestDTO storeDTO,
+                                                     @RequestPart(name = "file", required = false) MultipartFile file) {
         try {
-            Store createdStore = storeService.create(store);
-            return ResponseEntity.ok(createdStore);
+            Store createdStore = storeService.create(storeDTO, file);
+            StoreResponseDTO responseDTO = StoreMapper.toDTO(createdStore);
+            return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error creating store: " + e.getMessage());
+            throw new RuntimeException("Error creating store", e);
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Store store) {

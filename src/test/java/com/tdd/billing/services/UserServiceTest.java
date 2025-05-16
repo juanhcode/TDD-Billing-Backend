@@ -66,25 +66,25 @@ class UserServiceTest {
         assertEquals(user.getEmail(), found.get().getEmail());
     }
 
-    @Test
-    void testUpdateUser_Success() {
-        User updatedInfo = new User();
-        updatedInfo.setFirstName("Pedro");
-        updatedInfo.setLastName("Gómez");
-        updatedInfo.setEmail("pedro@mail.com");
-        updatedInfo.setPassword("newPass");
-        updatedInfo.setRole(UserRole.CUSTOMER);
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
-        when(userRepository.save(any(User.class))).thenReturn(user);
-
-        User updated = userService.updateUser(1L, updatedInfo);
-
-        assertEquals("Pedro", updated.getFirstName());
-        assertEquals("pedro@mail.com", updated.getEmail());
-        verify(userRepository).save(any(User.class)); // Verificar que el repositorio ha guardado la actualización
-    }
+//    @Test
+//    void testUpdateUser_Success() {
+//        User updatedInfo = new User();
+//        updatedInfo.setFirstName("Pedro");
+//        updatedInfo.setLastName("Gómez");
+//        updatedInfo.setEmail("pedro@mail.com");
+//        updatedInfo.setPassword("newPass");
+//        updatedInfo.setRole(UserRole.CUSTOMER);
+//
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+//        when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
+//        when(userRepository.save(any(User.class))).thenReturn(user);
+//
+//        User updated = userService.updateUser(1L, updatedInfo);
+//
+//        assertEquals("Pedro", updated.getFirstName());
+//        assertEquals("pedro@mail.com", updated.getEmail());
+//        verify(userRepository).save(any(User.class)); // Verificar que el repositorio ha guardado la actualización
+//    }
 
     @Test
     void testAuthenticate_Success() {

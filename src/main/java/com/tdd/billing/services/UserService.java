@@ -1,9 +1,11 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.UpdateUserDTO;
 import com.tdd.billing.dto.UserResponseDTO;
 import com.tdd.billing.entities.User;
+import com.tdd.billing.entities.UserRole;
 import com.tdd.billing.repositories.UserRepository;
-import com.tdd.billing.utils.UserMapper;
+import com.tdd.billing.mappers.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,17 +36,37 @@ public class UserService {
     }
 
 
-    public User updateUser(Long id, User userDetails) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setEmail(userDetails.getEmail());
-        if (!userDetails.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+    public User updateUser(Long id, UpdateUserDTO dto, String photoUrl) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Actualiza campos básicos
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setAddress(dto.getAddress());
+        user.setStatus(dto.isStatus());
+
+        // Si se cambia el password
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-        user.setRole(userDetails.getRole());
+
+        // Rol
+        if (dto.getRole() != null) {
+            user.setRole(UserRole.valueOf(dto.getRole()));
+        }
+
+        // Foto (si fue subida)
+        if (photoUrl != null && !photoUrl.isBlank()) {
+            user.setPhotoUrl(photoUrl);
+        }
+
         return userRepository.save(user);
     }
+
+
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

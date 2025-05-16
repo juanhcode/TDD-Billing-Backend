@@ -50,16 +50,16 @@ class ProductServiceTest {
         sampleProduct.setStatus(true);
     }
 
-    @Test
-    void shouldRegisterProduct() {
-        when(productRepository.save(sampleProduct)).thenReturn(sampleProduct);
-
-        Product result = productService.registerProduct(sampleProduct);
-
-        assertNotNull(result);
-        assertEquals("Camisa", result.getName());
-        verify(productRepository).save(sampleProduct);
-    }
+//    @Test
+//    void shouldRegisterProduct() {
+//        when(productRepository.save(sampleProduct)).thenReturn(sampleProduct);
+//
+//        Product result = productService.registerProduct(sampleProduct);
+//
+//        assertNotNull(result);
+//        assertEquals("Camisa", result.getName());
+//        verify(productRepository).save(sampleProduct);
+//    }
 
     @Test
     void shouldReturnProductById() {

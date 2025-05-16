@@ -1,13 +1,17 @@
 package com.tdd.billing.controllers;
-
+import com.tdd.billing.dto.ProductRequestDTO;
 import com.tdd.billing.dto.ProductResponseDTO;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
+import com.tdd.billing.mappers.ProductMapper;
 import com.tdd.billing.services.ProductService;
+import com.tdd.billing.services.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +21,21 @@ public class ProductController {
 
     private final ProductService productService;
 
-    public ProductController(ProductService productService) {
+    private final S3Service s3Service;
+
+    public ProductController(ProductService productService, S3Service s3Service) {
         this.productService = productService;
+        this.s3Service = s3Service;
     }
 
     @PostMapping
-    public ResponseEntity<Product> register(@RequestBody Product product) {
-        Product saved = productService.registerProduct(product);
+    public ResponseEntity<ProductResponseDTO> register(@RequestPart("product") ProductRequestDTO product,
+                                                       @RequestPart("file") MultipartFile file) throws IOException {
+        String photoUrl = s3Service.uploadFile(file);
+        ProductResponseDTO saved = productService.registerProduct(product, photoUrl);
         return ResponseEntity.ok(saved);
     }
+
 
     @GetMapping
     public ResponseEntity<List<Product>> listActiveProducts() {
