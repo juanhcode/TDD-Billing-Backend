@@ -1,11 +1,15 @@
 package com.tdd.billing.controllers;
 
+import com.tdd.billing.dto.UpdateUserDTO;
 import com.tdd.billing.dto.UserResponseDTO;
 import com.tdd.billing.entities.User;
+import com.tdd.billing.mappers.UserMapper;
+import com.tdd.billing.services.S3Service;
 import com.tdd.billing.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,9 +18,11 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final S3Service s3Service;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, S3Service s3Service) {
         this.userService = userService;
+        this.s3Service = s3Service;
     }
 
     @PostMapping
@@ -35,10 +41,24 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    // Upload a file to S3
+    @PostMapping("/upload/{id}")
+    public String uploadFile(@PathVariable Long id,@RequestPart("user")UpdateUserDTO userDetails,@RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println("Hola: " + userDetails);
+        return s3Service.uploadFile(file);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> uploadFileAndUpdateUser(
+            @PathVariable Long id,
+            @RequestPart("user") UpdateUserDTO userDetails,
+            @RequestParam("file") MultipartFile file) throws IOException {
+
+        String photoUrl = s3Service.uploadFile(file);
+        User updatedUser = userService.updateUser(id, userDetails, photoUrl);
+        return ResponseEntity.ok(UserMapper.toDTO(updatedUser));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
