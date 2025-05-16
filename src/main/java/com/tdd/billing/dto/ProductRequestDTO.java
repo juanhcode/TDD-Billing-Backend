@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO {
-    private Long id;
+public class ProductRequestDTO {
     private String name;
     private String description;
     private BigDecimal price;
     private Integer stock;
+    private BigDecimal ratingRate;
+    private Integer ratingCount;
     private Boolean status;
     private Long storeId;
     private Long categoryId;
-    private Long supplierId;
+    private Long userId;
     private LocalDateTime createdAt;
 }
-

@@ -14,5 +14,4 @@ public class UserDTO {
     private String role;
     private String photoUrl;
     private boolean status;
-    private String photoNumber;
 }
