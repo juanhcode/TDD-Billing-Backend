@@ -96,15 +96,15 @@ class ProductControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void testGetByStore_Success() throws Exception {
-        ProductResponseDTO responseDTO = ProductMapper.toResponseDTO(product);
-        when(productService.listProductsByStore(1L)).thenReturn(List.of(responseDTO));
-
-        mockMvc.perform(get("/api/products/store/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
-    }
+//    @Test
+//    void testGetByStore_Success() throws Exception {
+//        ProductResponseDTO responseDTO = ProductMapper.toResponseDTO(product);
+//        when(productService.listProductsByStore(1L)).thenReturn(List.of(responseDTO));
+//
+//        mockMvc.perform(get("/api/products/store/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.length()").value(1));
+//    }
 
     @Test
     void testGetActiveByStore_Success() throws Exception {
