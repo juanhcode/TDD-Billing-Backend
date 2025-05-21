@@ -4,12 +4,13 @@ import com.tdd.billing.dto.ProductResponseDTO;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
-import com.tdd.billing.mappers.ProductMapper;
 import com.tdd.billing.services.ProductService;
 import com.tdd.billing.services.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -50,9 +51,15 @@ public class ProductController {
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<ProductResponseDTO>> getByStore(@PathVariable Long storeId) {
-        return ResponseEntity.ok(productService.listProductsByStore(storeId));
+    public ResponseEntity<Page<ProductResponseDTO>> getByStore(
+            @PathVariable Long storeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<ProductResponseDTO> products = productService.listProductsByStore(storeId, page, size);
+        return ResponseEntity.ok(products);
     }
+
 
 
     @GetMapping("/store/{storeId}/active")
@@ -81,5 +88,11 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/random/{n}")
+    public ResponseEntity<List<ProductResponseDTO>> getRandomProducts(@PathVariable("n") Long quantity) {
+        List<ProductResponseDTO> products = productService.getRandomProducts(quantity);
+        return ResponseEntity.ok(products);
     }
 }

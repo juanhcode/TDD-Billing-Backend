@@ -38,7 +38,7 @@ public class Product {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
-    @Column(nullable = false, length = 100)
+    @Column(columnDefinition = "text", nullable = false)
     private String name;
 
     @Column(columnDefinition = "text")

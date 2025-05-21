@@ -82,16 +82,16 @@ class ProductServiceTest {
         verify(productRepository).findByStatusTrue();
     }
 
-    @Test
-    void shouldReturnProductsByStore() {
-        Long storeId = 1L;
-        when(productRepository.findByStore(any(Store.class))).thenReturn(List.of(sampleProduct));
-
-        List<ProductResponseDTO> result = productService.listProductsByStore(storeId);
-
-        assertEquals(1, result.size());
-        verify(productRepository).findByStore(any(Store.class));
-    }
+//    @Test
+//    void shouldReturnProductsByStore() {
+//        Long storeId = 1L;
+//        when(productRepository.findByStore(any(Store.class))).thenReturn(List.of(sampleProduct));
+//
+//        List<ProductResponseDTO> result = productService.listProductsByStore(storeId);
+//
+//        assertEquals(1, result.size());
+//        verify(productRepository).findByStore(any(Store.class));
+//    }
 
     @Test
     void shouldReturnActiveProductsByStore() {

@@ -4,8 +4,10 @@ package com.tdd.billing.repositories;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.Category;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +20,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByStatusTrue();
 
     // Buscar todos los productos de una tienda específica
-    List<Product> findByStore(Store store);
+    Page<Product> findByStore(Store store, Pageable pageable);
+
+
 
     // Buscar productos por categoría
     List<Product> findByCategory(Category category);
