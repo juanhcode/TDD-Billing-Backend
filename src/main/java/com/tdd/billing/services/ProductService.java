@@ -11,9 +11,12 @@ import com.tdd.billing.repositories.ProductRepository;
 import com.tdd.billing.mappers.ProductMapper;
 import com.tdd.billing.repositories.StoreRepository;
 import com.tdd.billing.repositories.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import java.util.Collections;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 @Service
@@ -31,6 +34,8 @@ public class ProductService {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
     }
+    
+    
 
     // Registrar un nuevo producto
     public ProductResponseDTO registerProduct(ProductRequestDTO productRequestDTO, String photoUrl) {
@@ -61,6 +66,22 @@ public class ProductService {
         return ProductMapper.toResponseDTO(savedProduct);
     }
 
+    public List<ProductResponseDTO> getRandomProducts(Long quantity) {
+        List<Product> products = productRepository.findByStatusTrue();
+        if (products.size() <= quantity) {
+            return products.stream()
+                    .map(ProductMapper::toResponseDTO)
+                    .toList();
+        }
+        Collections.shuffle(products);
+
+        return products.stream()
+                .limit(quantity)
+                .map(ProductMapper::toResponseDTO)
+                .toList();
+    }
+
+
 
 
     // Obtener un producto por ID
@@ -75,15 +96,15 @@ public class ProductService {
     }
 
     // Listar productos por tienda
-    public List<ProductResponseDTO> listProductsByStore(Long storeId) {
+    public Page<ProductResponseDTO> listProductsByStore(Long storeId, int page, int size) {
         Store store = new Store();
         store.setId(storeId);
 
-        return productRepository.findByStore(store)
-                .stream()
-                .map(ProductMapper::toResponseDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size); // <-- esto es válido
+        return productRepository.findByStore(store, pageable)
+                .map(ProductMapper::toResponseDTO);
     }
+
 
 
     // Listar productos activos por tienda
