@@ -4,6 +4,7 @@ import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.StoreRepository;
 import com.tdd.billing.services.CategoryService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,12 +51,15 @@ public class CategoryController {
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<CategoryResponseDTO>> getByStore(@PathVariable Long storeId) {
-        Store store = new Store();
-        store.setId(storeId);
-        List<CategoryResponseDTO> categories = categoryService.listCategoriesByStoreDTO(store);
+    public ResponseEntity<Page<CategoryResponseDTO>> getByStore(
+            @PathVariable Long storeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<CategoryResponseDTO> categories = categoryService.listCategoriesByStoreDTO(storeId, page, size);
         return ResponseEntity.ok(categories);
     }
+
 
     @GetMapping("/store/{storeId}/active")
     public ResponseEntity<List<CategoryResponseDTO>> getActiveByStore(@PathVariable Long storeId) {

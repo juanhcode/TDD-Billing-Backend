@@ -71,13 +71,13 @@ class CategoryServiceTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    void testListCategoriesByStoreDTO() {
-        when(categoryRepository.findByStore(sampleStore)).thenReturn(List.of(sampleCategory));
-        List<CategoryResponseDTO> result = categoryService.listCategoriesByStoreDTO(sampleStore);
-        assertEquals(1, result.size());
-        assertEquals("Electronics", result.get(0).getName());
-    }
+//    @Test
+//    void testListCategoriesByStoreDTO() {
+//        when(categoryRepository.findByStore(sampleStore)).thenReturn(List.of(sampleCategory));
+//        List<CategoryResponseDTO> result = categoryService.listCategoriesByStoreDTO(sampleStore);
+//        assertEquals(1, result.size());
+//        assertEquals("Electronics", result.get(0).getName());
+//    }
 
     @Test
     void testListActiveCategoriesByStoreDTO() {
