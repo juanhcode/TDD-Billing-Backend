@@ -96,14 +96,17 @@ public class ProductService {
     }
 
     // Listar productos por tienda
-    public Page<ProductResponseDTO> listProductsByStore(Long storeId, int page, int size) {
-        Store store = new Store();
-        store.setId(storeId);
+    public Page<ProductResponseDTO> listProductsByStore(Long storeId, Long categoryId, int page, int size) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found"));
 
-        Pageable pageable = PageRequest.of(page, size); // <-- esto es válido
-        return productRepository.findByStore(store, pageable)
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        return productRepository.findByStoreAndCategoryAndStatusTrue(store, category, PageRequest.of(page, size))
                 .map(ProductMapper::toResponseDTO);
     }
+
 
 
 
