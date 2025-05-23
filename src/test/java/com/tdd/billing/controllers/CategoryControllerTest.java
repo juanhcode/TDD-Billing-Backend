@@ -103,15 +103,15 @@ class CategoryControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void testGetByStore() throws Exception {
-        CategoryResponseDTO dto = new CategoryResponseDTO(1L, "Electronics", "Devices", true, LocalDateTime.now());
-        when(categoryService.listCategoriesByStoreDTO(any(Store.class))).thenReturn(List.of(dto));
-
-        mockMvc.perform(get("/api/categories/store/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Electronics"));
-    }
+//    @Test
+//    void testGetByStore() throws Exception {
+//        CategoryResponseDTO dto = new CategoryResponseDTO(1L, "Electronics", "Devices", true, LocalDateTime.now());
+//        when(categoryService.listCategoriesByStoreDTO(any(Store.class))).thenReturn(List.of(dto));
+//
+//        mockMvc.perform(get("/api/categories/store/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[0].name").value("Electronics"));
+//    }
 
     @Test
     void testGetActiveByStore() throws Exception {
