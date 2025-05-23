@@ -2,6 +2,8 @@ package com.tdd.billing.repositories;
 
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,7 +18,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByStatusTrue();
 
     // Buscar categorías por tienda
-    List<Category> findByStore(Store store);
+    Page<Category> findByStore(Store store, Pageable pageable);
+
 
     // Buscar categorías activas en una tienda específica
     List<Category> findByStoreAndStatusTrue(Store store);

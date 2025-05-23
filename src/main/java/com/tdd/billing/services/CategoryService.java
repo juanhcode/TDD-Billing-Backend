@@ -4,8 +4,10 @@ import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.CategoryRepository;
+import com.tdd.billing.repositories.StoreRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final StoreRepository storeRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, StoreRepository storeRepository) {
         this.categoryRepository = categoryRepository;
+        this.storeRepository = storeRepository;
     }
 
     public Category registerCategory(Category category) {
@@ -31,10 +35,12 @@ public class CategoryService {
     }
 
 
-    public List<CategoryResponseDTO> listCategoriesByStoreDTO(Store store) {
-        return categoryRepository.findByStore(store).stream()
-                .map(this::mapToDTO)
-                .toList();
+    public Page<CategoryResponseDTO> listCategoriesByStoreDTO(Long storeId, int page, int size) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+
+        Page<Category> categories = categoryRepository.findByStore(store, PageRequest.of(page, size));
+        return categories.map(this::mapToDTO);
     }
 
     public List<CategoryResponseDTO> listActiveCategoriesByStoreDTO(Store store) {
