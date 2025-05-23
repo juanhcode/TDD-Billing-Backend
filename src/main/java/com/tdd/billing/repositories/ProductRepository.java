@@ -23,6 +23,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByStore(Store store, Pageable pageable);
 
 
+    Page<Product> findByStoreAndCategoryAndStatusTrue(Store store, Category category, Pageable pageable);
+
+
 
     // Buscar productos por categoría
     List<Product> findByCategory(Category category);
