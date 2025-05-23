@@ -50,15 +50,17 @@ public class ProductController {
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/store/{storeId}")
+    @GetMapping("/store/{storeId}/{categoryId}")
     public ResponseEntity<Page<ProductResponseDTO>> getByStore(
             @PathVariable Long storeId,
+            @PathVariable Long categoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<ProductResponseDTO> products = productService.listProductsByStore(storeId, page, size);
+        Page<ProductResponseDTO> products = productService.listProductsByStore(storeId, categoryId, page, size);
         return ResponseEntity.ok(products);
     }
+
 
 
 
