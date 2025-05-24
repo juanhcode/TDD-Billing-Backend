@@ -100,20 +100,28 @@ public class ProductService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
 
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        Page<Product> productsPage;
 
-        return productRepository.findByStoreAndCategoryAndStatusTrue(store, category, PageRequest.of(page, size))
-                .map(ProductMapper::toResponseDTO);
+        if (categoryId == 0) {
+            // Obtener productos de todas las categorías
+            productsPage = productRepository.findByStoreAndStatusTrue(store, PageRequest.of(page, size));
+        } else {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            productsPage = productRepository.findByStoreAndCategoryAndStatusTrue(store, category, PageRequest.of(page, size));
+        }
+
+        return productsPage.map(ProductMapper::toResponseDTO);
     }
 
 
 
 
-    // Listar productos activos por tienda
-    public List<Product> listActiveProductsByStore(Store store) {
-        return productRepository.findByStoreAndStatusTrue(store);
-    }
+
+//    // Listar productos activos por tienda
+//    public List<Product> listActiveProductsByStore(Store store) {
+//        return productRepository.findByStoreAndStatusTrue(store);
+//    }
 
     // Listar productos por categoría
     public List<Product> listProductsByCategory(Category category) {

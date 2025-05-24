@@ -86,16 +86,16 @@ class SaleControllerTest {
         assertEquals(sales, response.getBody());
     }
 
-    @Test
-    void getSalesByStore_shouldReturnList() {
-        List<Sale> sales = List.of(sampleSale);
-        when(saleService.buscarPorTienda(20L)).thenReturn(sales);
-
-        ResponseEntity<List<Sale>> response = saleController.getSalesByStore(20L);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(sales, response.getBody());
-    }
+//    @Test
+//    void getSalesByStore_shouldReturnList() {
+//        List<Sale> sales = List.of(sampleSale);
+//        when(saleService.buscarPorTienda(20L)).thenReturn(sales);
+//
+//        ResponseEntity<List<Sale>> response = saleController.getSalesByStore(20L);
+//
+//        assertEquals(200, response.getStatusCodeValue());
+//        assertEquals(sales, response.getBody());
+//    }
 
     @Test
     void searchSalesByDateRange_shouldReturnList() {

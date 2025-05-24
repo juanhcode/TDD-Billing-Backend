@@ -93,15 +93,15 @@ class ProductServiceTest {
 //        verify(productRepository).findByStore(any(Store.class));
 //    }
 
-    @Test
-    void shouldReturnActiveProductsByStore() {
-        when(productRepository.findByStoreAndStatusTrue(sampleProduct.getStore())).thenReturn(List.of(sampleProduct));
-
-        List<Product> result = productService.listActiveProductsByStore(sampleProduct.getStore());
-
-        assertEquals(1, result.size());
-        verify(productRepository).findByStoreAndStatusTrue(sampleProduct.getStore());
-    }
+//    @Test
+//    void shouldReturnActiveProductsByStore() {
+//        when(productRepository.findByStoreAndStatusTrue(sampleProduct.getStore())).thenReturn(List.of(sampleProduct));
+//
+//        List<Product> result = productService.listActiveProductsByStore(sampleProduct.getStore());
+//
+//        assertEquals(1, result.size());
+//        verify(productRepository).findByStoreAndStatusTrue(sampleProduct.getStore());
+//    }
 
     @Test
     void shouldReturnProductsByCategory() {
