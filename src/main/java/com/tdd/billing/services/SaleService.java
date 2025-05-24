@@ -98,11 +98,12 @@ public class SaleService {
         return saleRepository.findByUser(user);
     }
 
-    public List<Sale> buscarPorTienda(Long storeId) {
+    public List<Sale> findByStore(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new EntityNotFoundException("Tienda no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Store not found"));
         return saleRepository.findByStore(store);
     }
+
 
     public List<Sale> buscarPorRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return saleRepository.findBySaleDateBetween(inicio, fin);

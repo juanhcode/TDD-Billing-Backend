@@ -64,13 +64,13 @@ public class ProductController {
 
 
 
-    @GetMapping("/store/{storeId}/active")
-    public ResponseEntity<List<Product>> getActiveByStore(@PathVariable Long storeId) {
-        Store store = new Store();
-        store.setId(storeId);
-        List<Product> products = productService.listActiveProductsByStore(store);
-        return ResponseEntity.ok(products);
-    }
+//    @GetMapping("/store/{storeId}/active")
+//    public ResponseEntity<List<Product>> getActiveByStore(@PathVariable Long storeId) {
+//        Store store = new Store();
+//        store.setId(storeId);
+//        List<Product> products = productService.listActiveProductsByStore(store);
+//        return ResponseEntity.ok(products);
+//    }
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<Product>> getByCategory(@PathVariable Long categoryId) {

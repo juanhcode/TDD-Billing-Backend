@@ -1,6 +1,8 @@
 package com.tdd.billing.controllers;
 import com.tdd.billing.dto.SaleRequestDTO;
+import com.tdd.billing.dto.SaleResponseDto;
 import com.tdd.billing.entities.*;
+import com.tdd.billing.mappers.SaleMapper;
 import com.tdd.billing.services.SaleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +44,11 @@ public class SaleController {
     }
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<Sale>> getSalesByStore(@PathVariable Long storeId) {
-        return ResponseEntity.ok(saleService.buscarPorTienda(storeId));
+    public ResponseEntity<List<SaleResponseDto>> getSalesByStore(@PathVariable Long storeId) {
+        List<Sale> sales = saleService.findByStore(storeId);
+        return ResponseEntity.ok(SaleMapper.toDtoList(sales));
     }
+
 
     @GetMapping("/search")
     public ResponseEntity<List<Sale>> searchSalesByDateRange(
