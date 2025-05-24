@@ -32,7 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     // Buscar productos activos en una tienda específica
-    List<Product> findByStoreAndStatusTrue(Store store);
+    Page<Product> findByStoreAndStatusTrue(Store store, Pageable pageable);
 }
 
 

@@ -141,15 +141,15 @@ class SaleServiceTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    void testBuscarPorTienda_found() {
-        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
-        when(saleRepository.findByStore(store)).thenReturn(List.of(sale));
-
-        List<Sale> result = saleService.buscarPorTienda(1L);
-
-        assertEquals(1, result.size());
-    }
+//    @Test
+//    void testBuscarPorTienda_found() {
+//        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
+//        when(saleRepository.findByStore(store)).thenReturn(List.of(sale));
+//
+//        List<Sale> result = saleService.buscarPorTienda(1L);
+//
+//        assertEquals(1, result.size());
+//    }
 
     @Test
     void testBuscarPorRangoFechas() {

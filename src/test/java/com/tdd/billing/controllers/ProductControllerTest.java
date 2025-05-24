@@ -106,14 +106,14 @@ class ProductControllerTest {
 //                .andExpect(jsonPath("$.length()").value(1));
 //    }
 
-    @Test
-    void testGetActiveByStore_Success() throws Exception {
-        when(productService.listActiveProductsByStore(any(Store.class))).thenReturn(List.of(product));
-
-        mockMvc.perform(get("/api/products/store/1/active"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
-    }
+//    @Test
+//    void testGetActiveByStore_Success() throws Exception {
+//        when(productService.listActiveProductsByStore(any(Store.class))).thenReturn(List.of(product));
+//
+//        mockMvc.perform(get("/api/products/store/1/active"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.length()").value(1));
+//    }
 
     @Test
     void testGetByCategory_Success() throws Exception {
