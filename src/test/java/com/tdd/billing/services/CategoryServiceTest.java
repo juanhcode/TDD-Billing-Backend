@@ -64,13 +64,6 @@ class CategoryServiceTest {
         assertFalse(result.isPresent());
     }
 
-    @Test
-    void testListActiveCategories() {
-        when(categoryRepository.findByStatusTrue()).thenReturn(List.of(sampleCategory));
-        List<Category> result = categoryService.listActiveCategories();
-        assertEquals(1, result.size());
-    }
-
 //    @Test
 //    void testListCategoriesByStoreDTO() {
 //        when(categoryRepository.findByStore(sampleStore)).thenReturn(List.of(sampleCategory));

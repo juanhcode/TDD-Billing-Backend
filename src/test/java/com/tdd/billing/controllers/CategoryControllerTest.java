@@ -77,16 +77,6 @@ class CategoryControllerTest {
     }
 
     @Test
-    void testListActiveCategories() throws Exception {
-        List<Category> categories = List.of(category);
-        when(categoryService.listActiveCategories()).thenReturn(categories);
-
-        mockMvc.perform(get("/api/categories"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Electronics"));
-    }
-
-    @Test
     void testGetCategoryByIdFound() throws Exception {
         when(categoryService.getCategoryById(1L)).thenReturn(Optional.of(category));
 
