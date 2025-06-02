@@ -1,20 +1,20 @@
 package com.tdd.billing.services;
-
+import com.tdd.billing.dto.StoreRequestDTO;
+import com.tdd.billing.dto.StoreResponseDTO;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.entities.User;
 import com.tdd.billing.repositories.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,6 +22,9 @@ class StoreServiceTest {
 
     @Mock
     private StoreRepository storeRepository;
+
+    @Mock
+    private S3Service s3Service;
 
     @InjectMocks
     private StoreService storeService;
@@ -47,15 +50,19 @@ class StoreServiceTest {
         sampleStore.setCreatedAt(LocalDateTime.now());
     }
 
-//    @Test
-//    void testCreateStore() {
-//        when(storeRepository.save(any(Store.class))).thenReturn(sampleStore);
-//
-//
-//        assertThat(result).isNotNull();
-//        assertThat(result.getName()).isEqualTo("Tienda Test");
-//        verify(storeRepository, times(1)).save(sampleStore);
-//    }
+    @Test
+    void testCreateStoreThrowsIOException() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.isEmpty()).thenReturn(false);
+        when(s3Service.uploadFile(file)).thenThrow(new IOException("upload failed"));
+
+        StoreRequestDTO dto = new StoreRequestDTO();
+        dto.setName("Tienda Test");
+
+        assertThatThrownBy(() -> storeService.create(dto, file))
+                .isInstanceOf(IOException.class)
+                .hasMessage("upload failed");
+    }
 
     @Test
     void testFindByIdWhenStoreExists() {
@@ -65,7 +72,7 @@ class StoreServiceTest {
 
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("Tienda Test");
-        verify(storeRepository, times(1)).findById(1L);
+        verify(storeRepository).findById(1L);
     }
 
     @Test
@@ -75,7 +82,7 @@ class StoreServiceTest {
         Optional<Store> result = storeService.findById(2L);
 
         assertThat(result).isNotPresent();
-        verify(storeRepository, times(1)).findById(2L);
+        verify(storeRepository).findById(2L);
     }
 
     @Test
@@ -90,6 +97,27 @@ class StoreServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo("Tienda Actualizada");
-        verify(storeRepository, times(1)).save(updated);
+        verify(storeRepository).save(updated);
+    }
+
+    @Test
+    void testGetStoreDTOByIdWhenExists() {
+        when(storeRepository.findById(1L)).thenReturn(Optional.of(sampleStore));
+
+        Optional<StoreResponseDTO> result = storeService.getStoreDTOById(1L);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getName()).isEqualTo("Tienda Test");
+        verify(storeRepository).findById(1L);
+    }
+
+    @Test
+    void testGetStoreDTOByIdWhenNotExists() {
+        when(storeRepository.findById(10L)).thenReturn(Optional.empty());
+
+        Optional<StoreResponseDTO> result = storeService.getStoreDTOById(10L);
+
+        assertThat(result).isNotPresent();
+        verify(storeRepository).findById(10L);
     }
 }

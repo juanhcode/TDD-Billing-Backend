@@ -65,7 +65,7 @@ class NotificationServiceTest {
         when(productRepository.findById(10L)).thenReturn(Optional.of(sampleProduct));
         when(notificationRepository.save(any(Notification.class))).thenReturn(savedNotification);
 
-        NotificationResponseDTO result = notificationService.crearNotificacionDTO(requestDTO);
+        NotificationResponseDTO result = notificationService.createNotificationDTO(requestDTO);
 
         assertNotNull(result);
         assertEquals(savedNotification.getId(), result.getId());
@@ -78,14 +78,14 @@ class NotificationServiceTest {
         when(productRepository.findById(10L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> notificationService.crearNotificacionDTO(requestDTO));
+                () -> notificationService.createNotificationDTO(requestDTO));
     }
 
     @Test
     void shouldListNotificationsByUserId() {
         when(notificationRepository.findByUserId(1L)).thenReturn(List.of(savedNotification));
 
-        List<NotificationResponseDTO> result = notificationService.listarPorUsuario(1L);
+        List<NotificationResponseDTO> result = notificationService.listByUser(1L);
 
         assertEquals(1, result.size());
         assertEquals(savedNotification.getId(), result.get(0).getId());
@@ -95,7 +95,7 @@ class NotificationServiceTest {
     void shouldReturnEmptyListIfUserHasNoNotifications() {
         when(notificationRepository.findByUserId(2L)).thenReturn(Collections.emptyList());
 
-        List<NotificationResponseDTO> result = notificationService.listarPorUsuario(2L);
+        List<NotificationResponseDTO> result = notificationService.listByUser(2L);
 
         assertTrue(result.isEmpty());
     }
@@ -109,7 +109,7 @@ class NotificationServiceTest {
 
         // Verifica que la excepción sea lanzada
         assertThrows(EntityNotFoundException.class, () -> {
-            notificationService.crearNotificacionDTO(requestDTO);
+            notificationService.createNotificationDTO(requestDTO);
         });
     }
 
@@ -120,7 +120,7 @@ class NotificationServiceTest {
         when(notificationRepository.save(any())).thenThrow(new RuntimeException("DB error"));
 
         RuntimeException ex = assertThrows(RuntimeException.class, () ->
-                notificationService.crearNotificacionDTO(requestDTO));
+                notificationService.createNotificationDTO(requestDTO));
 
         assertEquals("DB error", ex.getMessage());
     }
@@ -136,7 +136,7 @@ class NotificationServiceTest {
             return n;
         });
 
-        NotificationResponseDTO result = notificationService.crearNotificacionDTO(requestDTO);
+        NotificationResponseDTO result = notificationService.createNotificationDTO(requestDTO);
 
         assertNull(result.getProductId());
     }
@@ -148,7 +148,7 @@ class NotificationServiceTest {
         ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
         when(notificationRepository.save(captor.capture())).thenReturn(savedNotification);
 
-        notificationService.crearNotificacionDTO(requestDTO);
+        notificationService.createNotificationDTO(requestDTO);
 
         Notification saved = captor.getValue();
         assertFalse(saved.getIsRead());

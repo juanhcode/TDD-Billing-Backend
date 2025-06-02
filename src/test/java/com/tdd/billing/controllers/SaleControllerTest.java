@@ -1,7 +1,9 @@
 package com.tdd.billing.controllers;
-
 import com.tdd.billing.dto.SaleRequestDTO;
+import com.tdd.billing.dto.SaleResponseDto;
 import com.tdd.billing.entities.Sale;
+import com.tdd.billing.entities.Store;
+import com.tdd.billing.entities.User;
 import com.tdd.billing.services.SaleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -86,16 +87,32 @@ class SaleControllerTest {
         assertEquals(sales, response.getBody());
     }
 
-//    @Test
-//    void getSalesByStore_shouldReturnList() {
-//        List<Sale> sales = List.of(sampleSale);
-//        when(saleService.buscarPorTienda(20L)).thenReturn(sales);
-//
-//        ResponseEntity<List<Sale>> response = saleController.getSalesByStore(20L);
-//
-//        assertEquals(200, response.getStatusCodeValue());
-//        assertEquals(sales, response.getBody());
-//    }
+    @Test
+    void getSalesByStore_shouldReturnList() {
+        Store store = new Store();
+        store.setId(20L);
+        sampleSale.setStore(store);  // Inicializa store
+
+        User user = new User();
+        user.setId(1L);
+        sampleSale.setUser(user);    // Inicializa user
+
+        List<Sale> sales = List.of(sampleSale);
+        when(saleService.findByStore(20L)).thenReturn(sales);
+
+        ResponseEntity<List<SaleResponseDto>> response = saleController.getSalesByStore(20L);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+
+        // Validaciones opcionales
+        assertFalse(response.getBody().isEmpty());
+        assertEquals(20L, response.getBody().get(0).getStoreId());
+        assertEquals(1L, response.getBody().get(0).getUserId()); // Si tienes este campo en SaleResponseDto
+    }
+
+
+
 
     @Test
     void searchSalesByDateRange_shouldReturnList() {

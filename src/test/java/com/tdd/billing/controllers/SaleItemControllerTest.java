@@ -28,10 +28,8 @@ class SaleItemControllerTest {
     @BeforeEach
     void setUp() {
         requestDTO = new SaleItemRequestDTO();
-        // puedes configurar campos si deseas
         responseDTO = new SaleItemResponseDTO();
         responseDTO.setId(1L);
-        // puedes configurar más campos si existen
     }
 
     @Test
@@ -41,7 +39,19 @@ class SaleItemControllerTest {
         ResponseEntity<SaleItemResponseDTO> response = saleItemController.createSaleItem(requestDTO);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(responseDTO, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(responseDTO.getId(), response.getBody().getId());
+        verify(saleItemService, times(1)).createSaleItem(requestDTO);
+    }
+
+    @Test
+    void createSaleItem_whenServiceReturnsNull_shouldReturnOkWithNullBody() {
+        when(saleItemService.createSaleItem(requestDTO)).thenReturn(null);
+
+        ResponseEntity<SaleItemResponseDTO> response = saleItemController.createSaleItem(requestDTO);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNull(response.getBody());
         verify(saleItemService, times(1)).createSaleItem(requestDTO);
     }
 }

@@ -38,13 +38,13 @@ class NotificationControllerTest {
 
     @Test
     void createNotification_shouldReturnCreatedNotification() {
-        when(notificationService.crearNotificacionDTO(requestDTO)).thenReturn(responseDTO);
+        when(notificationService.createNotificationDTO(requestDTO)).thenReturn(responseDTO);
 
         ResponseEntity<NotificationResponseDTO> response = notificationController.createNotification(requestDTO);
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(responseDTO, response.getBody());
-        verify(notificationService, times(1)).crearNotificacionDTO(requestDTO);
+        verify(notificationService, times(1)).createNotificationDTO(requestDTO);
     }
 
     @Test
@@ -52,12 +52,12 @@ class NotificationControllerTest {
         List<NotificationResponseDTO> list = List.of(responseDTO);
         Long userId = 123L;
 
-        when(notificationService.listarPorUsuario(userId)).thenReturn(list);
+        when(notificationService.listByUser(userId)).thenReturn(list);
 
         ResponseEntity<List<NotificationResponseDTO>> response = notificationController.getNotificationsByUser(userId);
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(list, response.getBody());
-        verify(notificationService, times(1)).listarPorUsuario(userId);
+        verify(notificationService, times(1)).listByUser(userId);
     }
 }
