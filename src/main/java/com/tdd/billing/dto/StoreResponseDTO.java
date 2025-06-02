@@ -19,4 +19,7 @@ public class StoreResponseDTO {
     private Boolean status;
     private String address;
     private LocalDateTime createdAt;
+
+    public StoreResponseDTO() {
+    }
 }

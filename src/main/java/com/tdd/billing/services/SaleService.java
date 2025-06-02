@@ -52,7 +52,7 @@ public class SaleService {
         notificationRequest.setType("SALE");
         notificationRequest.setProductId(2L);
 
-        notificationService.crearNotificacionDTO(notificationRequest);
+        notificationService.createNotificationDTO(notificationRequest);
 
         return savedSale;
     }

@@ -2,12 +2,10 @@ package com.tdd.billing.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.tdd.billing.dto.ProductResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Product;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.services.ProductService;
-import com.tdd.billing.mappers.ProductMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,19 +55,6 @@ class ProductControllerTest {
         product.setCategory(new Category(1L));
         product.setCreatedAt(LocalDateTime.now());
     }
-
-//    @Test
-//    void testRegisterProduct_Success() throws Exception {
-//        when(productService.registerProduct(any(Product.class))).thenReturn(product);
-//
-//        mockMvc.perform(post("/api/products")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(product)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(product.getId()))
-//                .andExpect(jsonPath("$.name").value(product.getName()));
-//    }
-
     @Test
     void testListActiveProducts_Success() throws Exception {
         when(productService.listActiveProducts()).thenReturn(List.of(product));
@@ -96,25 +81,6 @@ class ProductControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    void testGetByStore_Success() throws Exception {
-//        ProductResponseDTO responseDTO = ProductMapper.toResponseDTO(product);
-//        when(productService.listProductsByStore(1L)).thenReturn(List.of(responseDTO));
-//
-//        mockMvc.perform(get("/api/products/store/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.length()").value(1));
-//    }
-
-//    @Test
-//    void testGetActiveByStore_Success() throws Exception {
-//        when(productService.listActiveProductsByStore(any(Store.class))).thenReturn(List.of(product));
-//
-//        mockMvc.perform(get("/api/products/store/1/active"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.length()").value(1));
-//    }
-
     @Test
     void testGetByCategory_Success() throws Exception {
         when(productService.listProductsByCategory(any(Category.class))).thenReturn(List.of(product));
@@ -122,6 +88,15 @@ class ProductControllerTest {
         mockMvc.perform(get("/api/products/category/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    void testGetByCategory_EmptyList() throws Exception {
+        when(productService.listProductsByCategory(any(Category.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/products/category/999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test
@@ -141,5 +116,14 @@ class ProductControllerTest {
 
         mockMvc.perform(delete("/api/products/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testListActiveProducts_Empty() throws Exception {
+        when(productService.listActiveProducts()).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }
