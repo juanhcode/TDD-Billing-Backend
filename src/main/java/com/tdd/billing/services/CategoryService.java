@@ -30,10 +30,6 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    public List<Category> listActiveCategories() {
-        return categoryRepository.findByStatusTrue();
-    }
-
 
     public Page<CategoryResponseDTO> listCategoriesByStoreDTO(Long storeId, int page, int size) {
         Store store = storeRepository.findById(storeId)
