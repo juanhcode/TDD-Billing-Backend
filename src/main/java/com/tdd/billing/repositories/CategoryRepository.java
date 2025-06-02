@@ -15,7 +15,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByName(String name);
 
     // Listar todas las categorías activas
-    List<Category> findByStatusTrue();
 
     // Buscar categorías por tienda
     Page<Category> findByStore(Store store, Pageable pageable);
