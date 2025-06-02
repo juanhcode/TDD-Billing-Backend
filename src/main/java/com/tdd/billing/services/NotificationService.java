@@ -25,25 +25,25 @@ public class NotificationService {
     }
 
     @Transactional
-    public NotificationResponseDTO crearNotificacionDTO(NotificationRequestDTO request) {
+    public NotificationResponseDTO createNotificationDTO(NotificationRequestDTO request) {
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
-        Notification notificacion = new Notification();
-        notificacion.setUserId(request.getUserId());
-        notificacion.setProduct(product);
-        notificacion.setTitle(request.getTitle());
-        notificacion.setMessage(request.getMessage());
-        notificacion.setType(request.getType());
-        notificacion.setIsRead(false);
-        notificacion.setCreatedAt(LocalDateTime.now());
+        Notification notification = new Notification();
+        notification.setUserId(request.getUserId());
+        notification.setProduct(product);
+        notification.setTitle(request.getTitle());
+        notification.setMessage(request.getMessage());
+        notification.setType(request.getType());
+        notification.setIsRead(false);
+        notification.setCreatedAt(LocalDateTime.now());
 
-        Notification saved = notificationRepository.save(notificacion);
+        Notification saved = notificationRepository.save(notification);
 
         return mapToResponseDTO(saved);
     }
 
-    public List<NotificationResponseDTO> listarPorUsuario(Long userId) {
+    public List<NotificationResponseDTO> listByUser(Long userId) {
         return notificationRepository.findByUserId(userId).stream()
                 .map(this::mapToResponseDTO)
                 .toList();
@@ -61,6 +61,4 @@ public class NotificationService {
         dto.setCreatedAt(notification.getCreatedAt());
         return dto;
     }
-
 }
-

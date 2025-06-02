@@ -78,7 +78,7 @@ class SaleServiceTest {
         assertNotNull(result);
         assertEquals(sale.getId(), result.getId());
 
-        verify(notificationService, times(1)).crearNotificacionDTO(any(NotificationRequestDTO.class));
+        verify(notificationService, times(1)).createNotificationDTO(any(NotificationRequestDTO.class));
     }
 
     @Test
