@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 @Service
@@ -84,18 +83,18 @@ public class ProductService {
 
 
 
-    // Obtener un producto por ID
+
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
 
-    // Listar todos los productos activos
+
     public List<Product> listActiveProducts() {
         return productRepository.findByStatusTrue();
     }
 
-    // Listar productos por tienda
+
     public Page<ProductResponseDTO> listProductsByStore(Long storeId, Long categoryId, int page, int size) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
