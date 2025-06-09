@@ -1,17 +1,22 @@
 package com.tdd.billing.services;
+
+import com.tdd.billing.dto.CategoryDTO;
 import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
 import com.tdd.billing.repositories.CategoryRepository;
+import com.tdd.billing.repositories.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,6 +25,9 @@ class CategoryServiceTest {
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private StoreRepository storeRepository;
 
     @InjectMocks
     private CategoryService categoryService;
@@ -64,14 +72,6 @@ class CategoryServiceTest {
         assertFalse(result.isPresent());
     }
 
-//    @Test
-//    void testListCategoriesByStoreDTO() {
-//        when(categoryRepository.findByStore(sampleStore)).thenReturn(List.of(sampleCategory));
-//        List<CategoryResponseDTO> result = categoryService.listCategoriesByStoreDTO(sampleStore);
-//        assertEquals(1, result.size());
-//        assertEquals("Electronics", result.get(0).getName());
-//    }
-
     @Test
     void testListActiveCategoriesByStoreDTO() {
         when(categoryRepository.findByStoreAndStatusTrue(sampleStore)).thenReturn(List.of(sampleCategory));
@@ -82,28 +82,39 @@ class CategoryServiceTest {
 
     @Test
     void testUpdateCategoryFound() {
-        Category newDetails = new Category();
+        CategoryDTO newDetails = new CategoryDTO();
         newDetails.setName("New name");
         newDetails.setDescription("New desc");
         newDetails.setStatus(false);
-        newDetails.setStore(sampleStore);
+        newDetails.setStoreId(1L);
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(sampleCategory));
-        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(storeRepository.findById(1L)).thenReturn(Optional.of(sampleStore));
+        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
+            Category updatedCategory = invocation.getArgument(0);
+            updatedCategory.setId(1L); // Simular persistencia
+            return updatedCategory;
+        });
 
-        Category updated = categoryService.updateCategory(1L, newDetails);
+        CategoryResponseDTO updated = categoryService.updateCategory(1L, newDetails);
 
+        assertNotNull(updated);
         assertEquals("New name", updated.getName());
         assertEquals("New desc", updated.getDescription());
         assertFalse(updated.getStatus());
     }
 
+
     @Test
     void testUpdateCategoryNotFound() {
+        CategoryDTO dto = new CategoryDTO();
+        dto.setName("Test");
+        dto.setStoreId(1L);
+
         when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                categoryService.updateCategory(999L, sampleCategory)
+                categoryService.updateCategory(999L, dto)
         );
 
         assertEquals("Category not found", exception.getMessage());
