@@ -2,6 +2,7 @@ package com.tdd.billing.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.tdd.billing.dto.CategoryDTO;
 import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
@@ -47,7 +48,7 @@ class CategoryControllerTest {
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
         objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule()); // Agregar esta línea
+        objectMapper.registerModule(new JavaTimeModule());
 
         store = new Store();
         store.setId(1L);
@@ -93,15 +94,6 @@ class CategoryControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    void testGetByStore() throws Exception {
-//        CategoryResponseDTO dto = new CategoryResponseDTO(1L, "Electronics", "Devices", true, LocalDateTime.now());
-//        when(categoryService.listCategoriesByStoreDTO(any(Store.class))).thenReturn(List.of(dto));
-//
-//        mockMvc.perform(get("/api/categories/store/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].name").value("Electronics"));
-//    }
 
     @Test
     void testGetActiveByStore() throws Exception {
@@ -115,17 +107,17 @@ class CategoryControllerTest {
 
     @Test
     void testUpdateCategory() throws Exception {
-        Category updated = new Category();
-        updated.setId(1L);
-        updated.setName("Updated");
-        updated.setDescription("Updated Desc");
-        updated.setStore(store);
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setName("Updated");
+        categoryDTO.setDescription("Updated Desc");
+        categoryDTO.setStatus(true);
 
-        when(categoryService.updateCategory(eq(1L), any(Category.class))).thenReturn(updated);
+        CategoryResponseDTO responseDTO = new CategoryResponseDTO(1L, "Updated", "Updated Desc", true, LocalDateTime.now());
+        when(categoryService.updateCategory(eq(1L), any(CategoryDTO.class))).thenReturn(responseDTO);
 
         mockMvc.perform(put("/api/categories/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(category)))
+                        .content(objectMapper.writeValueAsString(categoryDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Updated"));
     }
