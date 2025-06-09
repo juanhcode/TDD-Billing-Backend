@@ -1,5 +1,6 @@
 package com.tdd.billing.services;
 
+import com.tdd.billing.dto.CategoryDTO;
 import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
@@ -44,21 +45,37 @@ public class CategoryService {
                 .map(this::mapToDTO)
                 .toList();
     }
-    public Category updateCategory(Long id, Category categoryDetails) {
+    public CategoryResponseDTO updateCategory(Long id, CategoryDTO dto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        category.setName(categoryDetails.getName());
-        category.setDescription(categoryDetails.getDescription());
-        category.setStatus(categoryDetails.getStatus());
-        category.setStore(categoryDetails.getStore());
+        category.setName(dto.getName());
+        category.setDescription(dto.getDescription());
+        category.setStatus(dto.getStatus());
 
-        return categoryRepository.save(category);
+        Store store = storeRepository.findById(dto.getStoreId())
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+        category.setStore(store);
+
+        Category updated = categoryRepository.save(category);
+
+        return new CategoryResponseDTO(
+                updated.getId(),
+                updated.getName(),
+                updated.getDescription(),
+                updated.getStatus(),
+                updated.getCreatedAt()
+        );
     }
+
 
     public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        category.setStatus(false);
+        categoryRepository.save(category);
     }
+
 
 
     private CategoryResponseDTO mapToDTO(Category category) {

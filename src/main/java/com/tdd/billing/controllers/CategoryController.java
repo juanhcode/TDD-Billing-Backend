@@ -1,4 +1,5 @@
 package com.tdd.billing.controllers;
+import com.tdd.billing.dto.CategoryDTO;
 import com.tdd.billing.dto.CategoryResponseDTO;
 import com.tdd.billing.entities.Category;
 import com.tdd.billing.entities.Store;
@@ -64,10 +65,8 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> update(@PathVariable Long id, @RequestBody Category category) {
-        category.setId(id);  // Asegúrate de que el ID de la categoría sea correcto
-        Category updated = categoryService.updateCategory(id, category);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
+        return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
     }
 
     @DeleteMapping("/{id}")
