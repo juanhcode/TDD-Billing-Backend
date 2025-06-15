@@ -16,6 +16,12 @@ public class StatisticsService {
                 LocalDateTime.now().withHour(23).withMinute(59).withSecond(59)
         );
     }
+    public Long getSalesThisMonth() {
+        return saleRepository.countByCreatedAtBetween(
+                LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0),
+                LocalDateTime.now().withHour(23).withMinute(59).withSecond(59)
+        );
+    }
 
 
 }
