@@ -1,27 +1,33 @@
 package com.tdd.billing.services;
 import com.tdd.billing.dto.NotificationRequestDTO;
 import com.tdd.billing.dto.SaleRequestDTO;
-import com.tdd.billing.entities.*;
-import com.tdd.billing.repositories.*;
+import com.tdd.billing.entities.Sale;
+import com.tdd.billing.entities.Store;
+import com.tdd.billing.entities.User;
+import com.tdd.billing.repositories.SaleRepository;
+import com.tdd.billing.repositories.StoreRepository;
+import com.tdd.billing.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SaleService {
-    private final SaleRepository saleRepository;
 
+    private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final NotificationService notificationService;
 
-
     public SaleService(SaleRepository saleRepository,
                        UserRepository userRepository,
-                       StoreRepository storeRepository, NotificationService notificationService) {
+                       StoreRepository storeRepository,
+                       NotificationService notificationService) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
@@ -42,6 +48,7 @@ public class SaleService {
         sale.setStatus(requestSale.getStatus());
         sale.setPaymentMethod(requestSale.getPaymentMethod());
         sale.setTotalAmount(requestSale.getTotalAmount());
+
         Sale savedSale = saleRepository.save(sale);
 
         // Crear notificación
@@ -56,7 +63,6 @@ public class SaleService {
 
         return savedSale;
     }
-
 
     public List<Sale> listarVentasActivas() {
         return saleRepository.findByStatusNot(Sale.SaleStatus.CANCELLED);
@@ -100,13 +106,33 @@ public class SaleService {
 
     public List<Sale> findByStore(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Tienda no encontrada"));
         return saleRepository.findByStore(store);
     }
-
 
     public List<Sale> buscarPorRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return saleRepository.findBySaleDateBetween(inicio, fin);
     }
+
+    public BigDecimal getDailyIncome() {
+        LocalDateTime start = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime end = start.plusDays(1);
+        return calcularIngresosPorRango(start, end);
+    }
+
+    public BigDecimal getMonthlyIncome() {
+        LocalDateTime start = LocalDateTime.now().withDayOfMonth(1).toLocalDate().atStartOfDay();
+        LocalDateTime end = start.plusMonths(1);
+        return calcularIngresosPorRango(start, end);
+    }
+
+
+    private BigDecimal calcularIngresosPorRango(LocalDateTime start, LocalDateTime end) {
+        return saleRepository.findBySaleDateBetween(start, end).stream()
+                .filter(sale -> sale.getStatus() == Sale.SaleStatus.COMPLETED)
+                .map(Sale::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 
 }
