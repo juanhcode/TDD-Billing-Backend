@@ -76,7 +76,7 @@ public class StoreService {
 
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.github.com/repos/Danyel3096/Netlify-Deployer/actions/workflows/deploy.yml/dispatches"))
+                .uri(URI.create("https://api.github.com/repos/Danyel3096/Netlify-Deployer/actions/workflows/168762651/dispatches"))
                 .header("Accept", "application/vnd.github+json")
                 .header("Authorization", "Bearer " + githubToken)
                 .POST(HttpRequest.BodyPublishers.ofString(json))
