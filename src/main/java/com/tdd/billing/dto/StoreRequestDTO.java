@@ -15,4 +15,6 @@ public class StoreRequestDTO {
     private String description;
     private Boolean status;
     private String address;
+    private String themeJson; // aquí viene el JSON como String (el objeto completo que me diste)
 }
+
